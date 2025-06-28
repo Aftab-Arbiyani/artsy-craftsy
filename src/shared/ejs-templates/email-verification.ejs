@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 24px rgba(59, 130, 246, 0.10), 0 2px 4px rgba(0, 0, 0, 0.04);
+            text-align: center;
+            border: 2px solid #3B82F6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -60px;
+            left: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at 60px 60px, #3B82F6 0%, #f9fafb 100%);
+            opacity: 0.12;
+            z-index: 0;
+        }
+
+        .container::after {
+            content: "";
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at 120px 120px, #3B82F6 0%, #f9fafb 100%);
+            opacity: 0.10;
+            z-index: 0;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #3B82F6;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            color: #1e293b;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        p {
+            color: #334155;
+            position: relative;
+            z-index: 1;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(90deg, #3B82F6 0%, #6366F1 100%);
+            color: #ffffff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 24px;
+            word-break: break-word;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            transition: background 0.2s, box-shadow 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .button:hover {
+            background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.22);
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .container {
+                max-width: 100% !important;
+                margin: 10px;
+                padding: 16px !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .logo {
+                font-size: 20px !important;
+            }
+
+            h2 {
+                font-size: 20px !important;
+            }
+
+            .button {
+                width: 100% !important;
+                padding: 16px 0 !important;
+                font-size: 16px !important;
+            }
+
+            p,
+            .footer {
+                font-size: 15px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">🎨 ArtsyCraftsy</div>
+        <h2>Verify Your Email Address</h2>
+        <p>Hi <%= name %>,</p>
+        <p>Thank you for signing up for ArtsyCraftsy! To complete your registration, please verify your email address by
+            clicking the button below:</p>
+        <a href="<%= redirectUrl %>" class="button" style="color: #fff;">Verify Email</a>
+        <p>If the button doesn’t work, you can also copy and paste the following link into your browser:</p>
+        <p style="word-break: break-all;"><a href="<%= redirectUrl %>">
+                <%= redirectUrl %>
+            </a></p>
+        <div class="footer">
+            If you didn’t create an account, you can safely ignore this email.<br />
+            &copy; <%= new Date().getFullYear() %> ArtsyCraftsy. All rights reserved.
+        </div>
+    </div>
+</body>
+
+</html>
