@@ -5,7 +5,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class Category extends BaseEntity {
-  @Column({ type: 'character varying', unique: true })
+  @Column({ type: 'character varying' })
   name: string;
 
   @Column({ type: 'text', nullable: true })

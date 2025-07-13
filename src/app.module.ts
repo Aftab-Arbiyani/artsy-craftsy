@@ -16,6 +16,7 @@ import { MaterialModule } from './modules/material/material.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './shared/helpers/response-interceptor';
+import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ResponseInterceptor } from './shared/helpers/response-interceptor';
     OtpModule,
     MaterialModule,
     AdminModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

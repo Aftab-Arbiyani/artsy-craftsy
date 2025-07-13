@@ -5,6 +5,7 @@ import { UserAddress } from '../../user-address/entities/user-address.entity';
 import { Exclude } from 'class-transformer';
 import { USER_TYPE } from '@/shared/constants/enum';
 import { Token } from '@/modules/token/entities/token.entity';
+import { Product } from '@/modules/products/entities/product.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -21,6 +22,12 @@ export class User extends BaseEntity {
   @Column({ type: 'character varying', nullable: true })
   phone_number: string;
 
+  @Column({ type: 'character varying', nullable: true })
+  profile_picture: string;
+
+  @Column({ type: 'date', nullable: true })
+  date_of_birth: string;
+
   @Column({ type: 'boolean', default: false })
   is_email_verified: boolean;
 
@@ -35,4 +42,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Token, (token) => token.user)
   tokens: Token[];
+
+  @OneToMany(() => Product, (product) => product.user)
+  products: Product[];
 }
