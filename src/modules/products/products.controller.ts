@@ -7,20 +7,29 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import response from '@/shared/helpers/response';
 import { CONSTANT } from '@/shared/constants/message';
+import { AuthGuard } from '@nestjs/passport';
+import { IRequest } from '@/shared/constants/types';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  async create(@Body() createProductDto: CreateProductDto) {
+  async create(
+    @Body() createProductDto: CreateProductDto,
+    @Req() req: IRequest,
+  ) {
     try {
+      createProductDto.user = req.user.id;
       const product = await this.productsService.create(createProductDto);
 
       return response.successResponse({
@@ -32,6 +41,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll(@Query() query: any) {
     try {
@@ -49,6 +59,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -70,6 +81,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -95,6 +107,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

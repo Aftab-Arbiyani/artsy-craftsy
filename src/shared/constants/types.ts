@@ -1,3 +1,7 @@
+import { Admin } from '@/modules/admin/entities/admin.entity';
+import { User } from '@/modules/user/entities/user.entity';
+import { Request } from 'express';
+
 export interface mailOptions {
   from?: string;
   to: string;
@@ -23,4 +27,12 @@ export type CreateUserToken = {
   device_type: string;
   table_id: string;
   table: string;
+};
+
+export interface IRequest extends Request {
+  user: User | Admin;
+}
+
+export type OrderBy = {
+  [key: string]: 'ASC' | 'DESC';
 };

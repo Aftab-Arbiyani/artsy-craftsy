@@ -19,6 +19,7 @@ import generateToken from '@/shared/helpers/generate-token';
 import { CreateUserToken } from '@/shared/constants/types';
 import { Token } from '../token/entities/token.entity';
 import * as jwt from 'jsonwebtoken';
+import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class AuthService {
@@ -30,6 +31,8 @@ export class AuthService {
     private readonly otpRepository: Repository<Otp>,
     @InjectRepository(Token)
     private readonly tokenRepository: Repository<Token>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   async findOneWhere(options: FindOneOptions<User>): Promise<User | null> {
@@ -59,7 +62,7 @@ export class AuthService {
         minutes: 10,
         redirectUrl:
           process.env.REDIRECT_URL +
-          '/verify-email?id=' +
+          '/auth/verify-email?id=' +
           `${encryptedEmail}-${encryptedOtp}`,
       },
     );
@@ -179,15 +182,25 @@ export class AuthService {
     });
 
     const existingUser = await this.findOneWhere({
+      relations: {
+        addresses: true,
+      },
       where: {
         id: user.id,
       },
+    });
+
+    const productCount = await this.productRepository.count({
+      where: { user: { id: existingUser.id } },
     });
 
     return response.successResponse({
       message: CONSTANT.SUCCESS.LOGIN,
       data: {
         ...plainToInstance(User, existingUser),
+        is_profile_complete: !!existingUser.addresses.length,
+        product_count: productCount,
+        is_payment_setup_complete: true,
         jwt: token,
       },
     });

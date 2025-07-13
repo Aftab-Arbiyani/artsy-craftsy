@@ -7,17 +7,21 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { MaterialService } from './material.service';
 import { CreateMaterialDto } from './dto/create-material.dto';
 import { UpdateMaterialDto } from './dto/update-material.dto';
 import response from '@/shared/helpers/response';
 import { CONSTANT } from '@/shared/constants/message';
+import { QueryParamsDto } from '@/shared/dto/query-params.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('material')
 export class MaterialController {
   constructor(private readonly materialService: MaterialService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   async create(@Body() createMaterialDto: CreateMaterialDto) {
     try {
@@ -31,15 +35,44 @@ export class MaterialController {
     }
   }
 
-  @Get()
-  async findAll(@Query() query: any) {
+  @UseGuards(AuthGuard('jwt'))
+  @Get('dropdown/:id')
+  async getDropdown(@Param('id') id: string) {
     try {
-      const [data, count] = await this.materialService.findAll({ where: {} });
+      const [materials] = await this.materialService.findAll({
+        where: { category: { id } },
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('Materials'),
+        data: materials,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get()
+  async findAll(@Query() queryParamsDto: QueryParamsDto) {
+    try {
+      const { take, skip, order } = queryParamsDto;
+      const [data, count] = await this.materialService.findAll({
+        where: {},
+        take: +take,
+        skip: +skip,
+        order,
+      });
+
       return response.successResponseWithPagination({
         message: CONSTANT.SUCCESS.RECORD_FOUND('Materials'),
         total: count,
-        limit: query.limit,
-        offset: query.offset,
+        limit: +take,
+        offset: +skip,
         data: data,
       });
     } catch (error) {
@@ -47,6 +80,7 @@ export class MaterialController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -66,6 +100,7 @@ export class MaterialController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -89,6 +124,7 @@ export class MaterialController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

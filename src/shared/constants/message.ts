@@ -4,7 +4,6 @@ const SUCCESS = {
   FILE_UPDATED: (file: string) => `${file} Updated Successfully`,
   FILE_DELETED: (file: string) => `${file} Deleted Successfully`,
   SIGN_UP: 'Signup Successful',
-
   COMPLETE_EMAIL_VERIFICATION:
     'Mail Sent to your email Address, Please complete Email verification',
   LOGIN: 'Login Successful',
@@ -37,7 +36,7 @@ const ERROR = {
   LINK_EXPIRED: 'This link is expired!',
   FILE_TOO_LARGE: (size: string) =>
     `File too large. Maximum file size allowed is ${size}.`,
-  REQUIRED: (name: string) => `${name} must be required.`,
+  REQUIRED: (name: string) => `${name} is required.`,
   ALLOWED_FILE_TYPE: 'Only JPG, JPEG, or PNG files are allowed!',
   ALLOWED_DOCUMENT_TYPE: 'Only PDF type is allowed!',
   EMAIL_ALREADY_EXIST: 'Email is already registered. Try sign in.',

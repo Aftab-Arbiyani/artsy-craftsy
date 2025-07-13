@@ -2,7 +2,9 @@ import { Category } from '@/modules/category/entities/category.entity';
 import { BaseEntity } from '@/shared/base.entity';
 import { ORIENTATION } from '@/shared/constants/enum';
 import { Material } from '@/modules/material/entities/material.entity';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { ProductMedia } from './product-media.entity';
+import { User } from '@/modules/user/entities/user.entity';
 
 @Entity()
 export class Product extends BaseEntity {
@@ -45,11 +47,18 @@ export class Product extends BaseEntity {
   @Column({ type: 'boolean', default: false })
   is_copyright_owner: boolean;
 
-  @ManyToOne(() => Category, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Category, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
-  @ManyToOne(() => Material, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @ManyToOne(() => Material, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'material_id' })
   materials: Material;
+
+  @OneToMany(() => ProductMedia, (productMedia) => productMedia.product)
+  media: ProductMedia[];
 }
