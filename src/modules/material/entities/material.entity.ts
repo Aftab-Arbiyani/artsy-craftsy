@@ -2,12 +2,20 @@ import { Category } from '@/modules/category/entities/category.entity';
 import { Product } from '@/modules/products/entities/product.entity';
 import { BaseEntity } from '@/shared/base.entity';
 import { DEFAULT_STATUS } from '@/shared/constants/enum';
-import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  Index,
+} from 'typeorm';
 
 @Entity()
 export class Material extends BaseEntity {
   @ManyToOne(() => Category, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'category_id' })
+  @Index()
   category: Category;
 
   @OneToMany(() => Product, (product) => product.materials)

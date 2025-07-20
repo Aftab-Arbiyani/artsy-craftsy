@@ -17,6 +17,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './shared/helpers/response-interceptor';
 import { UploadModule } from './modules/upload/upload.module';
+import { CustomArtModule } from './modules/custom-art/custom-art.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { UploadModule } from './modules/upload/upload.module';
     MaterialModule,
     AdminModule,
     UploadModule,
+    CustomArtModule,
   ],
   controllers: [AppController],
   providers: [

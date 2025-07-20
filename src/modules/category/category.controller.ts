@@ -36,7 +36,6 @@ export class CategoryController {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get('dropdown')
   async getDropdown() {
     try {
@@ -56,7 +55,6 @@ export class CategoryController {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll(@Query() queryParamsDto: QueryParamsDto) {
     try {

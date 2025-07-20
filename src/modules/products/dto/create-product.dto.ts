@@ -73,16 +73,16 @@ export class CreateProductDto {
   @IsNotEmpty()
   category: Category;
 
-  @IsUUID()
   @IsOptional()
-  materials: Material;
+  @IsUUID()
+  materials?: Material;
 
   @IsUUID()
   @IsOptional()
   user: string;
 
   @IsArray()
-  @ArrayMinSize(3)
+  @ArrayMinSize(1)
   @ArrayMaxSize(5)
   @IsString({ each: true })
   images: string[];

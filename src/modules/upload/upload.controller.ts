@@ -32,7 +32,7 @@ export class UploadController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: 'public/image',
+        destination: 'public/images',
         filename: (req, file, cb) => {
           const pathStr = `${crypto.randomUUID()}${path.extname(file.originalname)}`;
           cb(null, pathStr);
@@ -65,7 +65,7 @@ export class UploadController {
       return response.successCreate({
         message: CONSTANT.SUCCESS.FILE_UPLOADED('Image'),
         data: {
-          image: 'images/' + file.filename,
+          image: 'public/images/' + file.filename,
         },
       });
     } catch (error) {
