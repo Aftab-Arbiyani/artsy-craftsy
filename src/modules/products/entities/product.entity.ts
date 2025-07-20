@@ -2,7 +2,14 @@ import { Category } from '@/modules/category/entities/category.entity';
 import { BaseEntity } from '@/shared/base.entity';
 import { ORIENTATION } from '@/shared/constants/enum';
 import { Material } from '@/modules/material/entities/material.entity';
-import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  Index,
+} from 'typeorm';
 import { ProductMedia } from './product-media.entity';
 import { User } from '@/modules/user/entities/user.entity';
 
@@ -47,16 +54,22 @@ export class Product extends BaseEntity {
   @Column({ type: 'boolean', default: false })
   is_copyright_owner: boolean;
 
+  @Column({ type: 'character varying', default: 'generate_product_id()' })
+  @Index()
+  product_number: string;
+
   @ManyToOne(() => Category, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
+  @Index()
   user: User;
 
   @ManyToOne(() => Material, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'material_id' })
+  @Index()
   materials: Material;
 
   @OneToMany(() => ProductMedia, (productMedia) => productMedia.product)

@@ -17,6 +17,7 @@ import response from '@/shared/helpers/response';
 import { CONSTANT } from '@/shared/constants/message';
 import { AuthGuard } from '@nestjs/passport';
 import { IRequest } from '@/shared/constants/types';
+import { Not } from 'typeorm';
 
 @Controller('products')
 export class ProductsController {
@@ -59,11 +60,72 @@ export class ProductsController {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @Get('all-products')
+  async getAllProducts(@Query() query: any) {
+    const [data, count] = await this.productsService.findAll({
+      relations: { category: true, materials: true, user: true, media: true },
+      where: { category: { id: query.category_id } },
+      select: {
+        id: true,
+        title: true,
+        category: { id: true, name: true },
+        materials: { id: true, name: true },
+        user: { id: true, name: true },
+        media: { id: true, file_path: true },
+        created_at: true,
+        listing_price: true,
+        discount: true,
+      },
+      order: { created_at: 'DESC' },
+      take: +query.take,
+      skip: +query.skip,
+    });
+
+    return response.successResponseWithPagination({
+      message: CONSTANT.SUCCESS.RECORD_FOUND('Products'),
+      total: count,
+      limit: +query.take,
+      offset: +query.skip,
+      data: data,
+    });
+  }
+
+  @Get('dashboard')
+  async getDashboardProducts() {
+    try {
+      const [data] = await this.productsService.findAll({
+        relations: { category: true, materials: true, user: true, media: true },
+        where: {},
+        take: 10,
+        select: {
+          id: true,
+          title: true,
+          category: { id: true, name: true },
+          materials: { id: true, name: true },
+          user: { id: true, name: true },
+          media: { id: true, file_path: true },
+          created_at: true,
+          listing_price: true,
+          discount: true,
+        },
+        order: { created_at: 'DESC' },
+      });
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('Products'),
+        data: data,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      const product = await this.productsService.findOne({ where: { id } });
+      const product = await this.productsService.findOne({
+        relations: { category: true, materials: true, media: true, user: true },
+        where: { id },
+      });
 
       if (!product) {
         return response.badRequest({
@@ -125,6 +187,43 @@ export class ProductsController {
       return response.successResponse({
         message: CONSTANT.SUCCESS.RECORD_DELETED('Product'),
         data: {},
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @Get('related-products/:id')
+  async getRelatedProducts(@Param('id') id: string) {
+    try {
+      const product = await this.productsService.findOne({
+        relations: { category: true },
+        where: { id },
+      });
+
+      if (!product) {
+        return response.badRequest({
+          message: CONSTANT.ERROR.RECORD_NOT_FOUND('Product'),
+          data: {},
+        });
+      }
+
+      const [relatedProducts] = await this.productsService.findAll({
+        relations: { user: true, media: true },
+        where: { category: { id: product.category.id }, id: Not(id) },
+        select: {
+          id: true,
+          title: true,
+          user: { id: true, name: true },
+          media: { id: true, file_path: true },
+        },
+        order: { created_at: 'DESC' },
+        take: 10,
+      });
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('Related Products'),
+        data: relatedProducts,
       });
     } catch (error) {
       return response.failureResponse(error);

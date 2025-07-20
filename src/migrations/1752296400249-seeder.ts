@@ -11,7 +11,7 @@ export class Seeder1752296400249 implements MigrationInterface {
             ('c9c51ab3-e26e-417d-9ab1-70124b57e6d0', 'Sculpture'),
             ('b14e9330-72cb-41db-bcb2-bd41e1032b22', 'Prints'),
             ('86d62851-d13c-4ac9-9269-2cbd77e6e290', 'Folk Art'),
-            ('668fb3d0-4e4a-4bd7-9496-0ce24ebc7089', 'Digital art'),
+            ('668fb3d0-4e4a-4bd7-9496-0ce24ebc7089', 'Digital Art'),
             ('81f65fcd-6f24-470d-8242-439ab07c30f9', 'Serigraph'),
             ('c33c3607-9c51-4cdc-9b64-1f677144149a', 'Printmaking'),
             ('23be016a-052c-4487-9b88-5e42a4b2c7c3', 'Painting');

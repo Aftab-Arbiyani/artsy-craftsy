@@ -35,7 +35,6 @@ export class MaterialController {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get('dropdown/:id')
   async getDropdown(@Param('id') id: string) {
     try {
