@@ -54,7 +54,7 @@ export class Product extends BaseEntity {
   @Column({ type: 'boolean', default: false })
   is_copyright_owner: boolean;
 
-  @Column({ type: 'character varying', default: 'generate_product_id()' })
+  @Column({ type: 'character varying', default: () => 'generate_product_id()' })
   @Index()
   product_number: string;
 

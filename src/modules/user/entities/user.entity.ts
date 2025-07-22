@@ -6,6 +6,7 @@ import { Exclude } from 'class-transformer';
 import { USER_TYPE } from '@/shared/constants/enum';
 import { Token } from '@/modules/token/entities/token.entity';
 import { Product } from '@/modules/products/entities/product.entity';
+import { CustomArt } from '@/modules/custom-art/entities/custom-art.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -45,4 +46,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
+
+  @OneToMany(() => CustomArt, (customArt) => customArt.user)
+  custom_arts: CustomArt[];
 }
