@@ -17,7 +17,7 @@ import response from '@/shared/helpers/response';
 import { CONSTANT } from '@/shared/constants/message';
 import { AuthGuard } from '@nestjs/passport';
 import { IRequest } from '@/shared/constants/types';
-import { Not } from 'typeorm';
+import { In, LessThanOrEqual, MoreThanOrEqual, Not } from 'typeorm';
 
 @Controller('products')
 export class ProductsController {
@@ -62,9 +62,37 @@ export class ProductsController {
 
   @Get('all-products')
   async getAllProducts(@Query() query: any) {
+    const {
+      category_id = [],
+      orientation = [],
+      price_from = 0,
+      price_to = 0,
+    } = query;
+    const where = {};
+
+    if (category_id.length) {
+      Object.assign(where, { category: { id: In(category_id) } });
+    }
+
+    if (orientation.length) {
+      Object.assign(where, { orientation: In(orientation) });
+    }
+
+    if (price_from) {
+      Object.assign(where, {
+        listing_price: MoreThanOrEqual(price_from),
+      });
+    }
+
+    if (price_to) {
+      Object.assign(where, {
+        listing_price: LessThanOrEqual(price_to),
+      });
+    }
+
     const [data, count] = await this.productsService.findAll({
       relations: { category: true, materials: true, user: true, media: true },
-      where: { category: { id: query.category_id } },
+      where: where,
       select: {
         id: true,
         title: true,
@@ -89,6 +117,8 @@ export class ProductsController {
       data: data,
     });
   }
+  //dateof birth
+  // add to cart page
 
   @Get('dashboard')
   async getDashboardProducts() {

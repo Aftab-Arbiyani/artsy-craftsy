@@ -13,39 +13,34 @@ export class Indexing1752729762030 implements MigrationInterface {
             CACHE 1;
     `);
     await queryRunner.query(`
-        CREATE OR REPLACE FUNCTION public.generate_product_id(
-            )
-            RETURNS bigint
-            LANGUAGE plpgsql
-            COST 100
-            VOLATILE PARALLEL UNSAFE
-        AS $BODY$
-                DECLARE
-                    random_part bigint;
-                    new_product_number bigint;
-                BEGIN
-                    LOOP
-                        -- Generate product number
-                        random_part := nextval('product_number_seq');
-                        -- Apply padding only if the sequence number is less than 1000
-                        IF random_part < 1000 THEN
-                            new_product_number := CAST(LPAD(random_part::text, 4, '0') AS bigint);
-                        ELSE
-                            new_product_number := random_part;
-                        END IF;
+        CREATE OR REPLACE FUNCTION public.generate_product_id () returns TEXT language 'plpgsql' cost 100 volatile parallel unsafe AS $BODY$
+        DECLARE
+            timestamp_part TEXT;
+            random_part TEXT;
+            new_product_number TEXT;
+        BEGIN
+            LOOP
+                -- Generate product number
+                timestamp_part := to_char(CURRENT_TIMESTAMP, 'MMYY');
+                random_part := nextval('product_number_seq')::TEXT;
+                -- Apply padding only if the sequence number is less than 1000
+                IF CAST(random_part AS INTEGER) < 100000 THEN
+                    random_part := LPAD(random_part, 6, '0');
+                END IF;
+                new_product_number := random_part;
 
-                        -- Check if the generated number already exists in the table
-                        EXIT WHEN NOT EXISTS (
-                            SELECT 1 FROM product WHERE product_number = new_product_number
-                        );
-                    END LOOP;
+                -- Check if the generated number already exists in the table
+                EXIT WHEN NOT EXISTS (
+                    SELECT 1 FROM product WHERE product_number::text = new_product_number::text
+                );
+            END LOOP;
 
-                    RETURN new_product_number;
-                END;
+            RETURN new_product_number;
+        END;
         $BODY$;
     `);
     await queryRunner.query(
-      `ALTER TABLE "product" ADD "product_number" character varying NOT NULL DEFAULT 'generate_product_id()'`,
+      `ALTER TABLE "product" ADD "product_number" character varying NOT NULL SET DEFAULT generate_product_id()`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_f801cc3914e97d9ba4ba87c5d4" ON "material" ("category_id") `,
