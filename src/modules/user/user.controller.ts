@@ -1,10 +1,19 @@
-import { Controller, Body, Patch, UseGuards, Req, Get } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Patch,
+  UseGuards,
+  Req,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CompleteProfileDto } from './dto/complete-profile.dto';
 import response from '@/shared/helpers/response';
 import { AuthGuard } from '@nestjs/passport';
 import { IRequest } from '@/shared/constants/types';
 import { CONSTANT } from '@/shared/constants/message';
+import { USER_TYPE } from '@/shared/constants/enum';
 
 @Controller('user')
 export class UserController {
@@ -73,6 +82,31 @@ export class UserController {
       return response.successResponse({
         message: CONSTANT.SUCCESS.RECORD_FOUND('User'),
         data: user,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @Get('artists-dropdown')
+  async getArtistsDropdown(
+    @Query('take') take: string,
+    @Query('skip') skip: string,
+  ) {
+    try {
+      const [artists, count] = await this.userService.findAll({
+        where: { type: USER_TYPE.ARTIST },
+        select: { id: true, name: true },
+        take: +take,
+        skip: +skip,
+      });
+
+      return response.successResponseWithPagination({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('Artists'),
+        total: count,
+        limit: +take,
+        offset: +skip,
+        data: artists,
       });
     } catch (error) {
       return response.failureResponse(error);

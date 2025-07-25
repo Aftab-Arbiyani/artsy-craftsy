@@ -65,6 +65,7 @@ export class ProductsController {
     const {
       category_id = [],
       orientation = [],
+      artist_id = [],
       price_from = 0,
       price_to = 0,
     } = query;
@@ -76,6 +77,10 @@ export class ProductsController {
 
     if (orientation.length) {
       Object.assign(where, { orientation: In(orientation) });
+    }
+
+    if (artist_id.length) {
+      Object.assign(where, { user: { id: In(artist_id) } });
     }
 
     if (price_from) {

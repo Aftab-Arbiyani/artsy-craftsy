@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CompleteProfileDto } from './dto/complete-profile.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { UserAddress } from '../user-address/entities/user-address.entity';
 import { plainToInstance } from 'class-transformer';
 
@@ -61,5 +61,10 @@ export class UserService {
     });
 
     return record;
+  }
+
+  async findAll(options: FindManyOptions<User>): Promise<[User[], number]> {
+    const [users, count] = await this.userRepository.findAndCount(options);
+    return [plainToInstance(User, users), count];
   }
 }
