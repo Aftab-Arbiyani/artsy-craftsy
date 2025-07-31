@@ -1,6 +1,6 @@
 import { Category } from '@/modules/category/entities/category.entity';
 import { BaseEntity } from '@/shared/base.entity';
-import { ORIENTATION } from '@/shared/constants/enum';
+import { ORIENTATION, PRODUCT_STATUS } from '@/shared/constants/enum';
 import { Material } from '@/modules/material/entities/material.entity';
 import {
   Entity,
@@ -58,20 +58,28 @@ export class Product extends BaseEntity {
   @Index()
   product_number: string;
 
+  @Index()
   @ManyToOne(() => Category, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
+  @Index()
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  @Index()
   user: User;
 
+  @Index()
   @ManyToOne(() => Material, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'material_id' })
-  @Index()
   materials: Material;
 
   @OneToMany(() => ProductMedia, (productMedia) => productMedia.product)
   media: ProductMedia[];
+
+  @Column({
+    type: 'enum',
+    enum: PRODUCT_STATUS,
+    default: PRODUCT_STATUS.ACTIVE,
+  })
+  status: PRODUCT_STATUS;
 }

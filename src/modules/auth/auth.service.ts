@@ -20,6 +20,7 @@ import { CreateUserToken } from '@/shared/constants/types';
 import { Token } from '../token/entities/token.entity';
 import * as jwt from 'jsonwebtoken';
 import { Product } from '../products/entities/product.entity';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -255,5 +256,30 @@ export class AuthService {
     } catch (_err) {
       return true;
     }
+  }
+
+  async changePassword(
+    changePasswordDto: ChangePasswordDto,
+    user: any,
+  ): Promise<boolean> {
+    const { current_password, password } = changePasswordDto;
+
+    const newUser = await this.userRepository.findOne({
+      where: { id: user.id },
+    });
+
+    const isSame = await bcrypt.compare(current_password, newUser.password);
+
+    if (!isSame) {
+      return false;
+    }
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    await this.userRepository.update(newUser.id, {
+      password: encryptedPassword,
+    });
+
+    return true;
   }
 }

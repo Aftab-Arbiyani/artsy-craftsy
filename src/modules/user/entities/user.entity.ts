@@ -49,4 +49,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => CustomArt, (customArt) => customArt.user)
   custom_arts: CustomArt[];
+
+  @OneToMany(() => CustomArt, (customArt) => customArt.artist)
+  custom_order: CustomArt[];
 }

@@ -18,6 +18,9 @@ import { CONSTANT } from '@/shared/constants/message';
 import { AuthGuard } from '@nestjs/passport';
 import { IRequest } from '@/shared/constants/types';
 import { In, LessThanOrEqual, MoreThanOrEqual, Not } from 'typeorm';
+import { FilterProductsDto } from './dto/filter-products.dto';
+import { UUIDValidationPipe } from '@/shared/pipe/uuid.validation.pipe';
+import { PRODUCT_STATUS } from '@/shared/constants/enum';
 
 @Controller('products')
 export class ProductsController {
@@ -61,15 +64,15 @@ export class ProductsController {
   }
 
   @Get('all-products')
-  async getAllProducts(@Query() query: any) {
+  async getAllProducts(@Query() queryParams: FilterProductsDto) {
     const {
       category_id = [],
       orientation = [],
       artist_id = [],
       price_from = 0,
       price_to = 0,
-    } = query;
-    const where = {};
+    } = queryParams;
+    const where = { status: PRODUCT_STATUS.ACTIVE };
 
     if (category_id.length) {
       Object.assign(where, { category: { id: In(category_id) } });
@@ -108,22 +111,21 @@ export class ProductsController {
         created_at: true,
         listing_price: true,
         discount: true,
+        status: true,
       },
       order: { created_at: 'DESC' },
-      take: +query.take,
-      skip: +query.skip,
+      take: +queryParams.take,
+      skip: +queryParams.skip,
     });
 
     return response.successResponseWithPagination({
       message: CONSTANT.SUCCESS.RECORD_FOUND('Products'),
       total: count,
-      limit: +query.take,
-      offset: +query.skip,
+      limit: +queryParams.take,
+      offset: +queryParams.skip,
       data: data,
     });
   }
-  //dateof birth
-  // add to cart page
 
   @Get('dashboard')
   async getDashboardProducts() {
@@ -142,6 +144,7 @@ export class ProductsController {
           created_at: true,
           listing_price: true,
           discount: true,
+          status: true,
         },
         order: { created_at: 'DESC' },
       });
@@ -154,8 +157,76 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Get('my-products')
+  async getMyProducts(@Req() req: IRequest) {
+    try {
+      const [data, count] = await this.productsService.findAll({
+        relations: { category: true, materials: true, user: true, media: true },
+        where: { user: { id: req.user.id } },
+        select: {
+          id: true,
+          title: true,
+          category: { id: true, name: true },
+          materials: { id: true, name: true },
+          user: { id: true, name: true },
+          media: { id: true, file_path: true },
+          created_at: true,
+          listing_price: true,
+          discount: true,
+          quantity: true,
+          height: true,
+          width: true,
+          depth: true,
+          weight: true,
+          amount_receivable: true,
+          status: true,
+        },
+        order: { created_at: 'DESC' },
+      });
+
+      return response.successResponseWithPagination({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('My Products'),
+        total: count,
+        limit: 10,
+        offset: 0,
+        data: data,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('product-details/:id')
+  async getProductDetails(
+    @Param('id', UUIDValidationPipe) id: string,
+    @Req() req: IRequest,
+  ) {
+    try {
+      const product = await this.productsService.findOne({
+        relations: { category: true, materials: true, user: true, media: true },
+        where: { id, user: { id: req.user.id } },
+      });
+
+      if (!product) {
+        return response.badRequest({
+          message: CONSTANT.ERROR.RECORD_NOT_FOUND('Product'),
+          data: {},
+        });
+      }
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('Product'),
+        data: product,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', UUIDValidationPipe) id: string) {
     try {
       const product = await this.productsService.findOne({
         relations: { category: true, materials: true, media: true, user: true },
@@ -181,7 +252,7 @@ export class ProductsController {
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', UUIDValidationPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
     try {
@@ -206,7 +277,7 @@ export class ProductsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id', UUIDValidationPipe) id: string) {
     try {
       const product = await this.productsService.findOne({ where: { id } });
 
@@ -229,10 +300,10 @@ export class ProductsController {
   }
 
   @Get('related-products/:id')
-  async getRelatedProducts(@Param('id') id: string) {
+  async getRelatedProducts(@Param('id', UUIDValidationPipe) id: string) {
     try {
       const product = await this.productsService.findOne({
-        relations: { category: true },
+        relations: { category: true, user: true },
         where: { id },
       });
 
@@ -249,16 +320,34 @@ export class ProductsController {
         select: {
           id: true,
           title: true,
+          created_at: true,
           user: { id: true, name: true },
           media: { id: true, file_path: true },
         },
         order: { created_at: 'DESC' },
-        take: 10,
+        take: 5,
+      });
+
+      const [relatedArtistProducts] = await this.productsService.findAll({
+        relations: { user: true, media: true },
+        where: { user: { id: product.user.id }, id: Not(id) },
+        select: {
+          id: true,
+          title: true,
+          created_at: true,
+          user: { id: true, name: true },
+          media: { id: true, file_path: true },
+        },
+        order: { created_at: 'DESC' },
+        take: 5,
       });
 
       return response.successResponse({
         message: CONSTANT.SUCCESS.RECORD_FOUND('Related Products'),
-        data: relatedProducts,
+        data: {
+          related_products: relatedProducts,
+          related_artist_products: relatedArtistProducts,
+        },
       });
     } catch (error) {
       return response.failureResponse(error);
