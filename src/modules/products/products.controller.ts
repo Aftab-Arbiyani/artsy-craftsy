@@ -353,4 +353,33 @@ export class ProductsController {
       return response.failureResponse(error);
     }
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('edit/:id')
+  async editProduct(
+    @Param('id', UUIDValidationPipe) id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @Req() req: IRequest,
+  ) {
+    try {
+      const product = await this.productsService.findOne({
+        where: { id, user: { id: req.user.id } },
+      });
+
+      if (!product) {
+        return response.badRequest({
+          message: CONSTANT.ERROR.RECORD_NOT_FOUND('Product'),
+          data: {},
+        });
+      }
+
+      await this.productsService.update(id, updateProductDto);
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.RECORD_UPDATED('Product'),
+        data: {},
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
 }

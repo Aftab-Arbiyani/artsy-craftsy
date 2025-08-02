@@ -10,7 +10,6 @@ import response from '@/shared/helpers/response';
 import { CONSTANT } from '@/shared/constants/message';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage, Multer } from 'multer';
-import * as fs from 'fs';
 import * as path from 'path';
 import {
   ALLOWED_IMAGE_MIME_TYPES,
@@ -20,13 +19,6 @@ import {
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
-
-  unlinkIfExist(fileName: string) {
-    const filePath = __dirname + `/../../../public/${fileName}`;
-    if (filePath.match(/\.\.\//g) !== null && fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-  }
 
   @Post('image')
   @UseInterceptors(
