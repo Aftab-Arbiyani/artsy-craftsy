@@ -58,6 +58,9 @@ export class Product extends BaseEntity {
   @Index()
   product_number: string;
 
+  @Column({ type: 'character varying' })
+  year_of_artwork: string;
+
   @Index()
   @ManyToOne(() => Category, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'category_id' })
@@ -73,7 +76,9 @@ export class Product extends BaseEntity {
   @JoinColumn({ name: 'material_id' })
   materials: Material;
 
-  @OneToMany(() => ProductMedia, (productMedia) => productMedia.product)
+  @OneToMany(() => ProductMedia, (productMedia) => productMedia.product, {
+    cascade: true,
+  })
   media: ProductMedia[];
 
   @Column({

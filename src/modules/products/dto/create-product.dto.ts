@@ -24,6 +24,10 @@ export class CreateProductDto {
   @IsNotEmpty()
   description: string;
 
+  @IsString()
+  @IsNotEmpty()
+  year_of_artwork: string;
+
   @IsEnum(ORIENTATION)
   @IsNotEmpty()
   orientation: ORIENTATION;
