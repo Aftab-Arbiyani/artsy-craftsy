@@ -1,6 +1,6 @@
 import { Category } from '@/modules/category/entities/category.entity';
 import { Material } from '@/modules/material/entities/material.entity';
-import { ORIENTATION } from '@/shared/constants/enum';
+import { ORIENTATION, PRODUCT_STATUS } from '@/shared/constants/enum';
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -23,6 +23,10 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  @IsString()
+  @IsNotEmpty()
+  year_of_artwork: string;
 
   @IsEnum(ORIENTATION)
   @IsNotEmpty()
@@ -80,6 +84,10 @@ export class CreateProductDto {
   @IsUUID()
   @IsOptional()
   user: string;
+
+  @IsEnum(PRODUCT_STATUS)
+  @IsNotEmpty()
+  status: PRODUCT_STATUS;
 
   @IsArray()
   @ArrayMinSize(1)

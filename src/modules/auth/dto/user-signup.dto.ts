@@ -6,6 +6,7 @@ import {
   MinLength,
   MaxLength,
   IsEnum,
+  IsStrongPassword,
 } from 'class-validator';
 
 export class UserSignupDto {
@@ -19,6 +20,7 @@ export class UserSignupDto {
 
   @IsNotEmpty({ message: 'Password is required' })
   @MinLength(6, { message: 'Password must be at least 6 characters' })
+  @IsStrongPassword()
   password: string;
 
   @IsOptional()

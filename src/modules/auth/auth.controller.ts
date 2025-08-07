@@ -1,10 +1,21 @@
-import { Controller, Post, Body, Query, Get, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Query,
+  Get,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserSignupDto } from './dto/user-signup.dto';
 import response from '@/shared/helpers/response';
 import { CONSTANT } from '@/shared/constants/message';
 import { EmailLoginDto } from './dto/email-login.dto';
 import { Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { IRequest } from '@/shared/constants/types';
 
 @Controller('auth')
 export class AuthController {
@@ -49,6 +60,34 @@ export class AuthController {
 
       return response.successResponse({
         message: CONSTANT.SUCCESS.EMAIL_VERIFIED,
+        data: {},
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('change-password')
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req: IRequest,
+  ) {
+    try {
+      const isPasswordUpdated = await this.authService.changePassword(
+        changePasswordDto,
+        req.user,
+      );
+
+      if (!isPasswordUpdated) {
+        return response.badRequest({
+          message: CONSTANT.ERROR.WRONG_PASSWORD,
+          data: {},
+        });
+      }
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.PASSWORD_RESET,
         data: {},
       });
     } catch (error) {

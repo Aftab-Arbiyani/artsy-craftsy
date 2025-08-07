@@ -15,6 +15,13 @@ export enum DEFAULT_STATUS {
   INACTIVE = 'in_active',
 }
 
+export enum PRODUCT_STATUS {
+  ACTIVE = 'active',
+  INACTIVE = 'in_active',
+  SOLD = 'sold',
+  ARCHIVED = 'archived',
+}
+
 export enum OTP_TYPE {
   SIGNUP = 'signup',
   LOGIN = 'login',
@@ -32,4 +39,11 @@ export enum ORIENTATION {
   LANDSCAPE = 'landscape',
   SQUARE = 'square',
   CIRCULAR = 'circular',
+}
+
+export enum CUSTOM_REQUEST_STATUS {
+  REQUESTED = 'requested',
+  REPLIED = 'replied',
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
 }

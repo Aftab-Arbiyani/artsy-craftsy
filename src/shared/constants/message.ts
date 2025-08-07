@@ -17,6 +17,7 @@ const SUCCESS = {
   EMAIL_VERIFIED: 'Email Verified Successfully',
   PASSWORD_RESET: 'Your password was successfully updated.',
   SUCCESSFULLY: (record: string) => `${record} Successfully`,
+  CUSTOM_REQUEST_ADDED: 'Request added. We will get back to you soon.',
 };
 
 const ERROR = {
@@ -30,6 +31,7 @@ const ERROR = {
     'You have reached the limit. Please try again after sometime.',
   VALIDATION: 'Validation Error!',
   WRONG_CREDENTIALS: 'Incorrect email or password.',
+  WRONG_PASSWORD: 'Incorrect password.',
   PASSWORD_NOT_MATCH: 'Password & Confirm Password Not Match',
   ALREADY_EXISTS: (text: string) => `${text} already exist`,
   EMAIL_NOT_VERIFIED: 'Email verification is pending',
