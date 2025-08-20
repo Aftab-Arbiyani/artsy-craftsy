@@ -5,14 +5,14 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class ChangePasswordDto {
-  @IsNotEmpty({ message: 'Current password is required' })
+export class ResetPasswordDto {
+  @IsNotEmpty({ message: 'Invalid Link' })
   @IsString()
-  current_password: string;
+  token: string;
 
   @IsNotEmpty({ message: 'Password is required' })
   @MinLength(6, { message: 'Password must be at least 6 characters' })
   @IsStrongPassword()
   @IsString()
-  password: string;
+  new_password: string;
 }

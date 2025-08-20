@@ -6,6 +6,7 @@ import {
   Req,
   Get,
   Query,
+  Param,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CompleteProfileDto } from './dto/complete-profile.dto';
@@ -14,6 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { IRequest } from '@/shared/constants/types';
 import { CONSTANT } from '@/shared/constants/message';
 import { USER_TYPE } from '@/shared/constants/enum';
+import { UUIDValidationPipe } from '@/shared/pipe/uuid.validation.pipe';
 
 @Controller('user')
 export class UserController {
@@ -90,8 +92,8 @@ export class UserController {
 
   @Get('artists-dropdown')
   async getArtistsDropdown(
-    @Query('take') take: string,
-    @Query('skip') skip: string,
+    @Query('take') take: string = '10',
+    @Query('skip') skip: string = '0',
   ) {
     try {
       const [artists, count] = await this.userService.findAll({
@@ -107,6 +109,35 @@ export class UserController {
         limit: +take,
         offset: +skip,
         data: artists,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @Get('artist-profile/:id')
+  async getArtistProfile(@Param('id', UUIDValidationPipe) id: string) {
+    try {
+      const artist = await this.userService.findOneWhere({
+        select: {
+          id: true,
+          name: true,
+          date_of_birth: true,
+          bio: true,
+        },
+        where: { id },
+      });
+
+      if (!artist) {
+        return response.badRequest({
+          message: CONSTANT.ERROR.RECORD_NOT_FOUND('Artist'),
+          data: {},
+        });
+      }
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('Artist'),
+        data: artist,
       });
     } catch (error) {
       return response.failureResponse(error);
