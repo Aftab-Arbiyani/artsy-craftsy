@@ -16,6 +16,7 @@ import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { IRequest } from '@/shared/constants/types';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -116,6 +117,50 @@ export class AuthController {
       const result = await this.authService.login(user, emailLoginDto);
 
       return result;
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string) {
+    try {
+      const user = await this.authService.findOneWhere({ where: { email } });
+
+      if (!user) {
+        return response.badRequest({
+          message: CONSTANT.SUCCESS.RECORD_NOT_FOUND('Account'),
+          data: {},
+        });
+      }
+
+      await this.authService.sendForgotPasswordEmail(user);
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.FORGOT_PASSWORD_EMAIL_SENT,
+        data: {},
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    try {
+      const isReset = await this.authService.resetPassword(resetPasswordDto);
+
+      if (!isReset) {
+        return response.badRequest({
+          message: CONSTANT.ERROR.LINK_EXPIRED,
+          data: {},
+        });
+      }
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.PASSWORD_RESET,
+        data: {},
+      });
     } catch (error) {
       return response.failureResponse(error);
     }

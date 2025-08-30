@@ -21,6 +21,7 @@ import { In, LessThanOrEqual, MoreThanOrEqual, Not } from 'typeorm';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { UUIDValidationPipe } from '@/shared/pipe/uuid.validation.pipe';
 import { PRODUCT_STATUS } from '@/shared/constants/enum';
+import { QueryParamsDto } from '@/shared/dto/query-params.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -45,7 +46,6 @@ export class ProductsController {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll(@Query() query: any) {
     try {
@@ -159,7 +159,10 @@ export class ProductsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('my-products')
-  async getMyProducts(@Req() req: IRequest) {
+  async getMyProducts(
+    @Req() req: IRequest,
+    @Query() queryParams: QueryParamsDto,
+  ) {
     try {
       const [data, count] = await this.productsService.findAll({
         relations: { category: true, materials: true, user: true, media: true },
@@ -182,14 +185,16 @@ export class ProductsController {
           amount_receivable: true,
           status: true,
         },
-        order: { created_at: 'DESC' },
+        take: +queryParams.take,
+        skip: +queryParams.skip,
+        order: queryParams.order,
       });
 
       return response.successResponseWithPagination({
         message: CONSTANT.SUCCESS.RECORD_FOUND('My Products'),
         total: count,
-        limit: 10,
-        offset: 0,
+        limit: +queryParams.take,
+        offset: +queryParams.skip,
         data: data,
       });
     } catch (error) {
@@ -377,6 +382,32 @@ export class ProductsController {
       return response.successResponse({
         message: CONSTANT.SUCCESS.RECORD_UPDATED('Product'),
         data: {},
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @Get('artist-products/:id')
+  async getArtistProducts(
+    @Param('id', UUIDValidationPipe) id: string,
+    @Query() queryParams: QueryParamsDto,
+  ) {
+    try {
+      const [artistProducts, count] = await this.productsService.findAll({
+        relations: { media: true },
+        where: { user: { id } },
+        take: +queryParams.take,
+        skip: +queryParams.skip,
+        order: queryParams.order,
+      });
+
+      return response.successResponseWithPagination({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('Artist Products'),
+        total: count,
+        limit: +queryParams.take,
+        offset: +queryParams.skip,
+        data: artistProducts,
       });
     } catch (error) {
       return response.failureResponse(error);

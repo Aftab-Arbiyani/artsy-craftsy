@@ -18,6 +18,7 @@ const SUCCESS = {
   PASSWORD_RESET: 'Your password was successfully updated.',
   SUCCESSFULLY: (record: string) => `${record} Successfully`,
   CUSTOM_REQUEST_ADDED: 'Request added. We will get back to you soon.',
+  FORGOT_PASSWORD_EMAIL_SENT: 'Email sent successfully',
 };
 
 const ERROR = {

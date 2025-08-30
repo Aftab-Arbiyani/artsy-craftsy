@@ -21,6 +21,7 @@ import { Token } from '../token/entities/token.entity';
 import * as jwt from 'jsonwebtoken';
 import { Product } from '../products/entities/product.entity';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -82,6 +83,7 @@ export class AuthService {
           id: user.id,
         },
         type,
+        is_verified: false,
       },
     });
 
@@ -126,6 +128,15 @@ export class AuthService {
     });
 
     if (!otp) return false;
+
+    const is_expired = otp.expire_at - Math.floor(Date.now() / 1000) <= 0;
+
+    if (is_expired) {
+      await this.otpRepository.update(otp.id, {
+        deleted_at: new Date().toISOString(),
+      });
+      return false;
+    }
 
     await this.otpRepository.update(otp.id, { is_verified: true });
     await this.userRepository.update({ email }, { is_email_verified: true });
@@ -279,6 +290,71 @@ export class AuthService {
     await this.userRepository.update(newUser.id, {
       password: encryptedPassword,
     });
+
+    return true;
+  }
+
+  async sendForgotPasswordEmail(user: User) {
+    const emailService = new EmailService();
+    const otp = await this.generateSignupOtp(user, OTP_TYPE.FORGOT_PASSWORD);
+    const encryptedOtp = this.encryptDecryptService.encrypt(`${otp}`);
+    const encryptedEmail = this.encryptDecryptService.encrypt(user.email);
+    const ejsTemplate = await renderFile(
+      resolve(
+        __dirname,
+        `../../../src/shared/ejs-templates/reset-password.ejs`,
+      ),
+      {
+        name: user.name,
+        minutes: 10,
+        redirectUrl:
+          process.env.REDIRECT_URL +
+          '/auth/reset-password?id=' +
+          `${encryptedEmail}-${encryptedOtp}`,
+      },
+    );
+
+    await emailService.sendMail({
+      to: user.email,
+      subject: 'Reset Password Request',
+      html: ejsTemplate,
+    });
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { token, new_password } = resetPasswordDto;
+
+    const [encryptedEmail, encryptedOtp] = token.split('-');
+    const email = this.encryptDecryptService.decrypt(encryptedEmail);
+    const otpValue = this.encryptDecryptService.decrypt(encryptedOtp);
+
+    const otp = await this.otpRepository.findOne({
+      where: {
+        email,
+        otp: parseInt(otpValue, 10),
+        type: OTP_TYPE.FORGOT_PASSWORD,
+        is_verified: false,
+      },
+    });
+
+    if (!otp) return false;
+
+    const is_expired = otp.expire_at - Math.floor(Date.now() / 1000) <= 0;
+
+    if (is_expired) {
+      await this.otpRepository.update(otp.id, {
+        deleted_at: new Date().toISOString(),
+      });
+      return false;
+    }
+
+    await this.otpRepository.update(otp.id, { is_verified: true });
+
+    const encryptedPassword = await bcrypt.hash(new_password, 10);
+    await this.userRepository.update(
+      { email },
+      { password: encryptedPassword },
+    );
 
     return true;
   }
