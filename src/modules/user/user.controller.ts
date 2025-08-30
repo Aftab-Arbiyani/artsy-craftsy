@@ -119,11 +119,13 @@ export class UserController {
   async getArtistProfile(@Param('id', UUIDValidationPipe) id: string) {
     try {
       const artist = await this.userService.findOneWhere({
+        relations: { addresses: true },
         select: {
           id: true,
           name: true,
           date_of_birth: true,
           bio: true,
+          profile_picture: true,
         },
         where: { id },
       });

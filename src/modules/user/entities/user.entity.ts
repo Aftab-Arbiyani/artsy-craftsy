@@ -8,7 +8,7 @@ import { Token } from '@/modules/token/entities/token.entity';
 import { Product } from '@/modules/products/entities/product.entity';
 import { CustomArt } from '@/modules/custom-art/entities/custom-art.entity';
 
-@Entity()
+@Entity('users')
 export class User extends BaseEntity {
   @Column({ type: 'character varying', length: 100 })
   name: string;

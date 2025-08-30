@@ -3,7 +3,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 import { DEFAULT_STATUS } from '@/shared/constants/enum';
 import { Token } from '@/modules/token/entities/token.entity';
 
-@Entity()
+@Entity('admins')
 export class Admin extends BaseEntity {
   @Column({ type: 'character varying', length: 100 })
   name: string;
