@@ -18,6 +18,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './shared/helpers/response-interceptor';
 import { UploadModule } from './modules/upload/upload.module';
 import { CustomArtModule } from './modules/custom-art/custom-art.module';
+import { CartModule } from './modules/cart/cart.module';
+import { AiSuggestionModule } from './modules/ai-suggestion/ai-suggestion.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { CustomArtModule } from './modules/custom-art/custom-art.module';
     AdminModule,
     UploadModule,
     CustomArtModule,
+    CartModule,
+    AiSuggestionModule,
   ],
   controllers: [AppController],
   providers: [

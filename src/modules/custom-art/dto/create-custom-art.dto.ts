@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateCustomArtDto {
   @IsOptional()
@@ -13,7 +13,11 @@ export class CreateCustomArtDto {
   @IsString()
   budget_range?: string;
 
-  @IsOptional()
   @IsNotEmpty()
+  @IsString()
   reference_image: string;
+
+  @IsOptional()
+  @IsUUID()
+  user: string;
 }
