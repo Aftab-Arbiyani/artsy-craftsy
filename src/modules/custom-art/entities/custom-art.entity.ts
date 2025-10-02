@@ -30,8 +30,11 @@ export class CustomArt extends BaseEntity {
   })
   status: CUSTOM_REQUEST_STATUS;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   price: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  amount_receivable: number;
 
   @Index()
   @ManyToOne(() => User, { onDelete: 'CASCADE' })

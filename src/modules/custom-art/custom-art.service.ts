@@ -5,6 +5,7 @@ import { FindManyOptions, FindOneOptions, IsNull, Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { CreateCustomArtDto } from './dto/create-custom-art.dto';
 import { UpdateCustomArtDto } from './dto/update-custom-art.dto';
+import { ArtRequestReplyDto } from './dto/art-request-reply.dto';
 
 @Injectable()
 export class CustomArtService {
@@ -14,7 +15,9 @@ export class CustomArtService {
   ) {}
 
   async create(createCustomArtDto: CreateCustomArtDto): Promise<CustomArt> {
-    const result = await this.customArtRepository.save(createCustomArtDto);
+    const result = await this.customArtRepository.save(
+      plainToInstance(CustomArt, createCustomArtDto),
+    );
     return plainToInstance(CustomArt, result);
   }
 
@@ -30,9 +33,9 @@ export class CustomArtService {
     return plainToInstance(CustomArt, result);
   }
 
-  async update(
+  async update<T extends UpdateCustomArtDto | ArtRequestReplyDto>(
     id: string,
-    updateCustomArtDto: UpdateCustomArtDto,
+    updateCustomArtDto: Partial<T>,
   ): Promise<CustomArt> {
     await this.customArtRepository.update(id, {
       ...updateCustomArtDto,

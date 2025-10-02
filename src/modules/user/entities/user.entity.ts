@@ -1,5 +1,5 @@
 import { BaseEntity } from '@/shared/base.entity';
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToOne } from 'typeorm';
 import { OneToMany } from 'typeorm';
 import { UserAddress } from '../../user-address/entities/user-address.entity';
 import { Exclude } from 'class-transformer';
@@ -7,6 +7,7 @@ import { USER_TYPE } from '@/shared/constants/enum';
 import { Token } from '@/modules/token/entities/token.entity';
 import { Product } from '@/modules/products/entities/product.entity';
 import { CustomArt } from '@/modules/custom-art/entities/custom-art.entity';
+import { Cart } from '@/modules/cart/entities/cart.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -38,6 +39,12 @@ export class User extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   bio: string;
 
+  @Column({ type: 'integer', default: 0 })
+  ai_suggestions_count: number;
+
+  @Column({ type: 'timestamp with time zone', nullable: true })
+  last_suggestion_at: string;
+
   @OneToMany(() => UserAddress, (userAddress) => userAddress.user)
   addresses: UserAddress[];
 
@@ -52,4 +59,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => CustomArt, (customArt) => customArt.artist)
   custom_order: CustomArt[];
+
+  @OneToOne(() => Cart, (cart) => cart.user)
+  cart: Cart;
 }
