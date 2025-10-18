@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CompleteProfileDto {
   @IsNotEmpty()
@@ -19,8 +19,6 @@ export class CompleteProfileDto {
 
   @IsNotEmpty()
   @IsString()
-  @MinLength(5)
-  @MaxLength(5)
   zip_code: string;
 
   @IsNotEmpty()
