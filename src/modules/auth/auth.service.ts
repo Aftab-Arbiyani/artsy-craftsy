@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, IsNull, Repository } from 'typeorm';
 import { User } from '@/modules/user/entities/user.entity';
 import { UserSignupDto } from './dto/user-signup.dto';
 import * as bcrypt from 'bcrypt';
@@ -354,6 +354,29 @@ export class AuthService {
     await this.userRepository.update(
       { email },
       { password: encryptedPassword },
+    );
+
+    return true;
+  }
+
+  async logout(req: any, token: string) {
+    const isExist = await this.tokenRepository.findOne({
+      where: {
+        [req.user.role]: { id: req.user.id },
+        jwt: token,
+        deleted_at: IsNull(),
+      },
+    });
+
+    if (!isExist) {
+      return false;
+    }
+
+    await this.tokenRepository.update(
+      { id: isExist.id, deleted_at: IsNull() },
+      {
+        deleted_at: new Date().toISOString(),
+      },
     );
 
     return true;

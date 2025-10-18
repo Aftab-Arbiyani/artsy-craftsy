@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { UserAddress } from '../user-address/entities/user-address.entity';
 import { plainToInstance } from 'class-transformer';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UserService {
@@ -66,5 +67,17 @@ export class UserService {
   async findAll(options: FindManyOptions<User>): Promise<[User[], number]> {
     const [users, count] = await this.userRepository.findAndCount(options);
     return [plainToInstance(User, users), count];
+  }
+
+  async updateProfile(user: User, updateProfileDto: UpdateProfileDto) {
+    const { name, bio, phone_number, profile_picture } = updateProfileDto;
+
+    await this.userRepository.update(user.id, {
+      name,
+      bio,
+      phone_number,
+      profile_picture,
+      updated_at: new Date().toISOString(),
+    });
   }
 }

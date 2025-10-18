@@ -5,10 +5,10 @@ import { ADDRESSTYPE } from '@/shared/constants/enum';
 
 @Entity()
 export class UserAddress extends BaseEntity {
-  @Column({ type: 'character varying', length: 100 })
+  @Column({ type: 'character varying', length: 100, nullable: true })
   name: string;
 
-  @Column({ type: 'character varying', length: 15 })
+  @Column({ type: 'character varying', length: 15, nullable: true })
   phone_number: string;
 
   @Column({ type: 'character varying' })
@@ -22,6 +22,9 @@ export class UserAddress extends BaseEntity {
 
   @Column({ type: 'character varying' })
   zip_code: string;
+
+  @Column({ type: 'character varying' })
+  country: string;
 
   @Column({ type: 'enum', default: ADDRESSTYPE.HOME, enum: ADDRESSTYPE })
   type: ADDRESSTYPE;

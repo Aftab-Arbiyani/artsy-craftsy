@@ -6,6 +6,7 @@ import {
   Get,
   Req,
   UseGuards,
+  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserSignupDto } from './dto/user-signup.dto';
@@ -159,6 +160,31 @@ export class AuthController {
 
       return response.successResponse({
         message: CONSTANT.SUCCESS.PASSWORD_RESET,
+        data: {},
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('logout')
+  async logout(@Req() req: any, @Headers() headers: any) {
+    try {
+      const { authorization } = headers;
+      const token = authorization.split(' ')[1];
+
+      const isLoggedOut = await this.authService.logout(req, token);
+
+      if (!isLoggedOut) {
+        return response.badRequest({
+          message: CONSTANT.ERROR.SOMETHING_WENT_WRONG,
+          data: {},
+        });
+      }
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.LOGOUT,
         data: {},
       });
     } catch (error) {

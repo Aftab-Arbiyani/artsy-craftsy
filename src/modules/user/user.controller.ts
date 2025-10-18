@@ -14,8 +14,9 @@ import response from '@/shared/helpers/response';
 import { AuthGuard } from '@nestjs/passport';
 import { IRequest } from '@/shared/constants/types';
 import { CONSTANT } from '@/shared/constants/message';
-import { USER_TYPE } from '@/shared/constants/enum';
+import { ADDRESSTYPE, USER_TYPE } from '@/shared/constants/enum';
 import { UUIDValidationPipe } from '@/shared/pipe/uuid.validation.pipe';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('user')
 export class UserController {
@@ -72,7 +73,7 @@ export class UserController {
         });
       }
       const userAddress = await this.userService.findOneAddress({
-        where: { user: { id: req.user.id } },
+        where: { user: { id: req.user.id }, type: ADDRESSTYPE.HOME },
       });
 
       if (userAddress) {
@@ -140,6 +141,35 @@ export class UserController {
       return response.successResponse({
         message: CONSTANT.SUCCESS.RECORD_FOUND('Artist'),
         data: artist,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('update-profile')
+  async updateProfile(
+    @Body() updateProfileDto: UpdateProfileDto,
+    @Req() req: IRequest,
+  ) {
+    try {
+      const user = await this.userService.findOneWhere({
+        where: { id: req.user.id },
+      });
+
+      if (!user) {
+        return response.badRequest({
+          message: CONSTANT.ERROR.RECORD_NOT_FOUND('User'),
+          data: {},
+        });
+      }
+
+      await this.userService.updateProfile(user, updateProfileDto);
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.RECORD_UPDATED('Profile'),
+        data: {},
       });
     } catch (error) {
       return response.failureResponse(error);

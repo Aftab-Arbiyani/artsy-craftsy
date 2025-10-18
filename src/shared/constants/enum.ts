@@ -47,3 +47,11 @@ export enum CUSTOM_REQUEST_STATUS {
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
 }
+
+export enum MEDIA_FOLDER {
+  default = 'default',
+  products = 'products',
+  profiles = 'profiles',
+  banners = 'banners',
+  categories = 'categories',
+}
