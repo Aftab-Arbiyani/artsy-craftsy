@@ -46,6 +46,7 @@ const ERROR = {
   RECORD_NOT_FOUND: (text: string) => `${text} Not Found.`,
   ACCOUNT_IS_BLOCKED: 'Your account is blocked!',
   INVALID_EMAIL: 'Please enter valid email',
+  PAYMENT_FAILED: 'Payment failed',
 };
 
 export const CONSTANT = {

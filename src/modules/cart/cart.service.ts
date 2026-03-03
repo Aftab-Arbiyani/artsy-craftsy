@@ -70,7 +70,10 @@ export class CartService {
       });
     }
 
-    if (productDetails.quantity < item.quantity) {
+    if (
+      !productDetails ||
+      (productDetails && productDetails.quantity < item.quantity)
+    ) {
       throw new BadRequestException(
         `Insufficient stock. Only ${productDetails.quantity} left.`,
       );

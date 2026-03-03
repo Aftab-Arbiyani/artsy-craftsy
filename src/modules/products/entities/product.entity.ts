@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { ProductMedia } from './product-media.entity';
 import { User } from '@/modules/user/entities/user.entity';
+import { OrderItem } from '@/modules/orders/entities/order-item.entity';
 
 @Entity()
 export class Product extends BaseEntity {
@@ -80,6 +81,9 @@ export class Product extends BaseEntity {
     cascade: true,
   })
   media: ProductMedia[];
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+  items: OrderItem[];
 
   @Column({
     type: 'enum',
