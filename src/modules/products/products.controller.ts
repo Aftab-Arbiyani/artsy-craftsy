@@ -17,7 +17,7 @@ import response from '@/shared/helpers/response';
 import { CONSTANT } from '@/shared/constants/message';
 import { AuthGuard } from '@nestjs/passport';
 import { IRequest } from '@/shared/constants/types';
-import { In, LessThanOrEqual, MoreThanOrEqual, Not } from 'typeorm';
+import { In, LessThanOrEqual, MoreThan, MoreThanOrEqual, Not } from 'typeorm';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { UUIDValidationPipe } from '@/shared/pipe/uuid.validation.pipe';
 import { PRODUCT_STATUS } from '@/shared/constants/enum';
@@ -49,7 +49,9 @@ export class ProductsController {
   @Get()
   async findAll(@Query() query: any) {
     try {
-      const [data, count] = await this.productsService.findAll({ where: {} });
+      const [data, count] = await this.productsService.findAll({
+        where: { quantity: MoreThan(0) },
+      });
 
       return response.successResponseWithPagination({
         message: CONSTANT.SUCCESS.RECORD_FOUND('Products'),
@@ -72,7 +74,7 @@ export class ProductsController {
       price_from = 0,
       price_to = 0,
     } = queryParams;
-    const where = { status: PRODUCT_STATUS.ACTIVE };
+    const where = { status: PRODUCT_STATUS.ACTIVE, quantity: MoreThan(0) };
 
     if (category_id.length) {
       Object.assign(where, { category: { id: In(category_id) } });
@@ -132,7 +134,7 @@ export class ProductsController {
     try {
       const [data] = await this.productsService.findAll({
         relations: { category: true, materials: true, user: true, media: true },
-        where: {},
+        where: { quantity: MoreThan(0) },
         take: 10,
         select: {
           id: true,
@@ -309,7 +311,7 @@ export class ProductsController {
     try {
       const product = await this.productsService.findOne({
         relations: { category: true, user: true },
-        where: { id },
+        where: { id, quantity: MoreThan(0) },
       });
 
       if (!product) {
@@ -335,7 +337,11 @@ export class ProductsController {
 
       const [relatedArtistProducts] = await this.productsService.findAll({
         relations: { user: true, media: true },
-        where: { user: { id: product.user.id }, id: Not(id) },
+        where: {
+          user: { id: product.user.id },
+          id: Not(id),
+          quantity: MoreThan(0),
+        },
         select: {
           id: true,
           title: true,
@@ -396,7 +402,7 @@ export class ProductsController {
     try {
       const [artistProducts, count] = await this.productsService.findAll({
         relations: { media: true },
-        where: { user: { id } },
+        where: { user: { id }, quantity: MoreThan(0) },
         take: +queryParams.take,
         skip: +queryParams.skip,
         order: queryParams.order,

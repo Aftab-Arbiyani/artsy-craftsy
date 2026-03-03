@@ -1,0 +1,1117 @@
+Event: payment.failed
+Payment failed: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.failed",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZfW7uJ67wLPZ0",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "failed",
+        "order_id": "order_RZfT4jxmGmcYhU",
+        "invoice_id": null,
+        "international": false,
+        "method": "card",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": false,
+        "description": "Art Transaction",
+        "card_id": "card_RZfW87cFH2AxHr",
+        "card": {
+          "id": "card_RZfW87cFH2AxHr",
+          "entity": "card",
+          "name": "",
+          "last4": "8228",
+          "network": "MasterCard",
+          "type": "credit",
+          "issuer": "HDFC",
+          "international": false,
+          "emi": true,
+          "sub_type": "business",
+          "token_iin": null
+        },
+        "bank": null,
+        "wallet": null,
+        "vpa": null,
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "token_id": "token_RZfW8Q60xxiBu9",
+        "notes": [],
+        "fee": null,
+        "tax": null,
+        "error_code": "BAD_REQUEST_ERROR",
+        "error_description": "Your payment has been cancelled. Try again or complete the payment later.",
+        "error_source": "customer",
+        "error_step": "payment_authentication",
+        "error_reason": "payment_cancelled",
+        "acquirer_data": {
+          "auth_code": null
+        },
+        "created_at": 1761823852
+      }
+    }
+  },
+  "created_at": 1761823858
+}
+✅ Webhook verified successfully
+Event: payment.authorized
+Payment authorized: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.authorized",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZZFFNgV2vL3AK",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "authorized",
+        "order_id": "order_RZZF5YCgRLXfRM",
+        "invoice_id": null,
+        "international": false,
+        "method": "upi",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": false,
+        "description": "Art Transaction",
+        "card_id": null,
+        "bank": null,
+        "wallet": null,
+        "vpa": "success@razorpay",
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "notes": [],
+        "fee": null,
+        "tax": null,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "rrn": "102928819433",
+          "upi_transaction_id": "294F797EF309358D5F0772F50B0116BA"
+        },
+        "created_at": 1761801763,
+        "upi": {
+          "vpa": "success@razorpay",
+          "flow": "collect"
+        }
+      }
+    }
+  },
+  "created_at": 1761801763
+}
+✅ Webhook verified successfully
+Event: payment.captured
+Payment captured: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.captured",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZZFFNgV2vL3AK",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "captured",
+        "order_id": "order_RZZF5YCgRLXfRM",
+        "invoice_id": null,
+        "international": false,
+        "method": "upi",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": true,
+        "description": "Art Transaction",
+        "card_id": null,
+        "bank": null,
+        "wallet": null,
+        "vpa": "success@razorpay",
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "notes": [],
+        "fee": 27612,
+        "tax": 4212,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "rrn": "102928819433",
+          "upi_transaction_id": "294F797EF309358D5F0772F50B0116BA"
+        },
+        "created_at": 1761801763,
+        "reward": null,
+        "upi": {
+          "vpa": "success@razorpay",
+          "flow": "collect"
+        },
+        "base_amount": 1170000
+      }
+    }
+  },
+  "created_at": 1761801764
+}
+✅ Webhook verified successfully
+Event: order.paid
+Order paid: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "order.paid",
+  "contains": [
+    "payment",
+    "order"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZZFFNgV2vL3AK",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "captured",
+        "order_id": "order_RZZF5YCgRLXfRM",
+        "invoice_id": null,
+        "international": false,
+        "method": "upi",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": true,
+        "description": "Art Transaction",
+        "card_id": null,
+        "bank": null,
+        "wallet": null,
+        "vpa": "success@razorpay",
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "notes": [],
+        "fee": 27612,
+        "tax": 4212,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "rrn": "102928819433",
+          "upi_transaction_id": "294F797EF309358D5F0772F50B0116BA"
+        },
+        "created_at": 1761801763,
+        "reward": null,
+        "upi": {
+          "vpa": "success@razorpay",
+          "flow": "collect"
+        }
+      }
+    },
+    "order": {
+      "entity": {
+        "id": "order_RZZF5YCgRLXfRM",
+        "entity": "order",
+        "amount": 1170000,
+        "amount_paid": 1170000,
+        "amount_due": 0,
+        "currency": "INR",
+        "receipt": "f478d8cb-e95c-4eff-81e5-af16f3695401",
+        "offer_id": null,
+        "status": "paid",
+        "attempts": 1,
+        "notes": [],
+        "created_at": 1761801754,
+        "description": null,
+        "checkout": null
+      }
+    }
+  },
+  "created_at": 1761801764
+}
+✅ Webhook verified successfully
+Event: payment.authorized
+Payment authorized: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.authorized",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZfsnUtGivzwz2",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "authorized",
+        "order_id": "order_RZfrNRxEVzaQuk",
+        "invoice_id": null,
+        "international": false,
+        "method": "emi",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": false,
+        "description": "Art Transaction",
+        "card_id": "card_RZfsngnQte9tar",
+        "card": {
+          "id": "card_RZfsngnQte9tar",
+          "entity": "card",
+          "name": "",
+          "last4": "0153",
+          "network": "Visa",
+          "type": "credit",
+          "issuer": "UTIB",
+          "international": false,
+          "emi": true,
+          "sub_type": "consumer",
+          "token_iin": null
+        },
+        "bank": "UTIB",
+        "wallet": null,
+        "vpa": null,
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "token_id": "token_RZfso2z0pRYL9T",
+        "notes": [],
+        "fee": null,
+        "tax": null,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "auth_code": "263886"
+        },
+        "emi": {
+          "issuer": "UTIB",
+          "type": "credit",
+          "rate": 1200,
+          "duration": 6
+        },
+        "emi_plan": {
+          "issuer": "UTIB",
+          "type": "credit",
+          "rate": 1200,
+          "duration": 6
+        },
+        "created_at": 1761825140
+      }
+    }
+  },
+  "created_at": 1761825150
+}
+✅ Webhook verified successfully
+Event: payment.captured
+Payment captured: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.captured",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZfsnUtGivzwz2",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "captured",
+        "order_id": "order_RZfrNRxEVzaQuk",
+        "invoice_id": null,
+        "international": false,
+        "method": "emi",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": true,
+        "description": "Art Transaction",
+        "card_id": "card_RZfsngnQte9tar",
+        "card": {
+          "id": "card_RZfsngnQte9tar",
+          "entity": "card",
+          "name": "",
+          "last4": "0153",
+          "network": "Visa",
+          "type": "credit",
+          "issuer": "UTIB",
+          "international": false,
+          "emi": true,
+          "sub_type": "consumer",
+          "token_iin": null
+        },
+        "bank": "UTIB",
+        "wallet": null,
+        "vpa": null,
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "token_id": "token_RZfso2z0pRYL9T",
+        "notes": [],
+        "fee": 41418,
+        "tax": 6318,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "auth_code": "263886"
+        },
+        "emi": {
+          "issuer": "UTIB",
+          "type": "credit",
+          "rate": 1200,
+          "duration": 6
+        },
+        "emi_plan": {
+          "issuer": "UTIB",
+          "type": "credit",
+          "rate": 1200,
+          "duration": 6
+        },
+        "created_at": 1761825140,
+        "reward": null,
+        "base_amount": 1170000
+      }
+    }
+  },
+  "created_at": 1761825151
+}
+✅ Webhook verified successfully
+Event: order.paid
+Order paid: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "order.paid",
+  "contains": [
+    "payment",
+    "order"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZfsnUtGivzwz2",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "captured",
+        "order_id": "order_RZfrNRxEVzaQuk",
+        "invoice_id": null,
+        "international": false,
+        "method": "emi",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": true,
+        "description": "Art Transaction",
+        "card_id": "card_RZfsngnQte9tar",
+        "card": {
+          "id": "card_RZfsngnQte9tar",
+          "entity": "card",
+          "name": "",
+          "last4": "0153",
+          "network": "Visa",
+          "type": "credit",
+          "issuer": "UTIB",
+          "international": false,
+          "emi": true,
+          "sub_type": "consumer",
+          "token_iin": null
+        },
+        "bank": "UTIB",
+        "wallet": null,
+        "vpa": null,
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "token_id": "token_RZfso2z0pRYL9T",
+        "notes": [],
+        "fee": 41418,
+        "tax": 6318,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "auth_code": "263886"
+        },
+        "emi": {
+          "issuer": "UTIB",
+          "type": "credit",
+          "rate": 1200,
+          "duration": 6
+        },
+        "emi_plan": {
+          "issuer": "UTIB",
+          "type": "credit",
+          "rate": 1200,
+          "duration": 6
+        },
+        "created_at": 1761825140,
+        "reward": null
+      }
+    },
+    "order": {
+      "entity": {
+        "id": "order_RZfrNRxEVzaQuk",
+        "entity": "order",
+        "amount": 1170000,
+        "amount_paid": 1170000,
+        "amount_due": 0,
+        "currency": "INR",
+        "receipt": "fb5b81cd-1b95-4746-a3c0-ab79c44c6ae6",
+        "offer_id": null,
+        "status": "paid",
+        "attempts": 3,
+        "notes": [],
+        "created_at": 1761825058,
+        "description": null,
+        "checkout": null
+      }
+    }
+  },
+  "created_at": 1761825151
+}
+Event: payment.captured
+Payment captured: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.captured",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZZSwqzYFTaChx",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "captured",
+        "order_id": "order_RZZSpZEpoaF6jC",
+        "invoice_id": null,
+        "international": false,
+        "method": "upi",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": true,
+        "description": "Art Transaction",
+        "card_id": null,
+        "bank": null,
+        "wallet": null,
+        "vpa": "success@razorpay",
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "notes": [],
+        "fee": 27612,
+        "tax": 4212,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "rrn": "155708706233",
+          "upi_transaction_id": "7049B4FEA10F43891C711F79C24BB907"
+        },
+        "created_at": 1761802541,
+        "reward": null,
+        "upi": {
+          "vpa": "success@razorpay",
+          "flow": "collect"
+        },
+        "base_amount": 1170000
+      }
+    }
+  },
+  "created_at": 1761802542
+}
+✅ Webhook verified successfully
+Event: payment.failed
+Payment failed: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.failed",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZfymooDzo9iCb",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "failed",
+        "order_id": "order_RZfvU4DBwjVumN",
+        "international": true,
+        "method": "card",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": false,
+        "description": "Art Transaction",
+        "card_id": "card_RZfyn269DN46BD",
+        "card": {
+          "id": "card_RZfyn269DN46BD",
+          "entity": "card",
+          "name": "Aftab Arbiyani",
+          "last4": "0628",
+          "network": "MasterCard",
+          "type": "credit",
+          "issuer": null,
+          "international": true,
+          "emi": false,
+          "sub_type": "consumer",
+          "token_iin": null
+        },
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "token_id": "token_RZfynM8bjdcaGl",
+        "notes": [],
+        "fee": null,
+        "tax": null,
+        "error_code": "BAD_REQUEST_ERROR",
+        "error_description": "Your payment could not be completed as this business accepts domestic (Indian) card payments only. Try another payment method.",
+        "error_source": "business",
+        "error_step": "payment_initiation",
+        "error_reason": "international_transaction_not_allowed",
+        "acquirer_data": {
+          "auth_code": null
+        },
+        "created_at": 1761825480
+      }
+    }
+  },
+  "created_at": 1761825480
+}
+✅ Webhook verified successfully
+Event: payment.authorized
+Payment authorized: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.authorized",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZzOpZp0GOoqa7",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "authorized",
+        "order_id": "order_RZzOb92zIVKVbQ",
+        "invoice_id": null,
+        "international": false,
+        "method": "netbanking",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": false,
+        "description": "Art Transaction",
+        "card_id": null,
+        "bank": "PUNB_R",
+        "wallet": null,
+        "vpa": null,
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "notes": [],
+        "fee": null,
+        "tax": null,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "bank_transaction_id": "6201579"
+        },
+        "created_at": 1761893869
+      }
+    }
+  },
+  "created_at": 1761893873
+}
+✅ Webhook verified successfully
+Event: payment.captured
+Payment captured: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.captured",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZzOpZp0GOoqa7",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "captured",
+        "order_id": "order_RZzOb92zIVKVbQ",
+        "invoice_id": null,
+        "international": false,
+        "method": "netbanking",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": true,
+        "description": "Art Transaction",
+        "card_id": null,
+        "bank": "PUNB_R",
+        "wallet": null,
+        "vpa": null,
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "notes": [],
+        "fee": 27612,
+        "tax": 4212,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "bank_transaction_id": "6201579"
+        },
+        "created_at": 1761893869,
+        "reward": null,
+        "base_amount": 1170000
+      }
+    }
+  },
+  "created_at": 1761893873
+}
+✅ Webhook verified successfully
+Event: order.paid
+Order paid: {
+  "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "order.paid",
+  "contains": [
+    "payment",
+    "order"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZzOpZp0GOoqa7",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "captured",
+        "order_id": "order_RZzOb92zIVKVbQ",
+        "invoice_id": null,
+        "international": false,
+        "method": "netbanking",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": true,
+        "description": "Art Transaction",
+        "card_id": null,
+        "bank": "PUNB_R",
+        "wallet": null,
+        "vpa": null,
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "notes": [],
+        "fee": 27612,
+        "tax": 4212,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "bank_transaction_id": "6201579"
+        },
+        "created_at": 1761893869,
+        "reward": null
+      }
+    },
+    "order": {
+      "entity": {
+        "id": "order_RZzOb92zIVKVbQ",
+        "entity": "order",
+        "amount": 1170000,
+        "amount_paid": 1170000,
+        "amount_due": 0,
+        "currency": "INR",
+        "receipt": "7dc00018-eae4-4e59-a3fb-44ee11441c0c",
+        "offer_id": null,
+        "status": "paid",
+        "attempts": 1,
+        "notes": [],
+        "created_at": 1761893856,
+        "description": null,
+        "checkout": null
+      }
+    }
+  },
+  "created_at": 1761893873
+}
+Refund processed: {
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "contains": [
+    "refund",
+    "payment"
+  ],
+  "created_at": 1762256220,
+  "entity": "event",
+  "event": "refund.processed",
+  "payload": {
+    "payment": {
+      "entity": {
+        "acquirer_data": {
+          "rrn": "106129554543",
+          "upi_transaction_id": "00828CA13F1E952BCC061918FE175805"
+        },
+        "amount": 1170000,
+        "amount_refunded": 10000,
+        "amount_transferred": 0,
+        "bank": null,
+        "base_amount": 1170000,
+        "captured": true,
+        "card_id": null,
+        "contact": "+918511474162",
+        "created_at": 1761798361,
+        "currency": "INR",
+        "description": "Art Transaction",
+        "email": "aftaba@solguruz.com",
+        "entity": "payment",
+        "error_code": null,
+        "error_description": null,
+        "error_reason": null,
+        "error_source": null,
+        "error_step": null,
+        "fee": 27612,
+        "id": "pay_RZYHMQRf8sB2c0",
+        "international": false,
+        "invoice_id": null,
+        "method": "upi",
+        "notes": [],
+        "order_id": "order_RZYHB2fUAVzfei",
+        "refund_status": "partial",
+        "status": "captured",
+        "tax": 4212,
+        "upi": {
+          "flow": "collect",
+          "vpa": "success@razorpay"
+        },
+        "vpa": "success@razorpay",
+        "wallet": null
+      }
+    },
+    "refund": {
+      "entity": {
+        "acquirer_data": {
+          "rrn": "10000000000000"
+        },
+        "amount": 10000,
+        "batch_id": null,
+        "created_at": 1762256215,
+        "currency": "INR",
+        "entity": "refund",
+        "id": "rfnd_RbeI8z0Ey3uIzx",
+        "notes": {
+          "comment": ""
+        },
+        "payment_id": "pay_RZYHMQRf8sB2c0",
+        "receipt": null,
+        "speed_processed": "normal",
+        "speed_requested": "normal",
+        "status": "processed"
+      }
+    }
+  }
+}
+Refund created: {
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "contains": [
+    "refund",
+    "payment"
+  ],
+  "created_at": 1762256220,
+  "entity": "event",
+  "event": "refund.created",
+  "payload": {
+    "payment": {
+      "entity": {
+        "acquirer_data": {
+          "rrn": "106129554543",
+          "upi_transaction_id": "00828CA13F1E952BCC061918FE175805"
+        },
+        "amount": 1170000,
+        "amount_refunded": 10000,
+        "amount_transferred": 0,
+        "bank": null,
+        "base_amount": 1170000,
+        "captured": true,
+        "card_id": null,
+        "contact": "+918511474162",
+        "created_at": 1761798361,
+        "currency": "INR",
+        "description": "Art Transaction",
+        "email": "aftaba@solguruz.com",
+        "entity": "payment",
+        "error_code": null,
+        "error_description": null,
+        "error_reason": null,
+        "error_source": null,
+        "error_step": null,
+        "fee": 27612,
+        "id": "pay_RZYHMQRf8sB2c0",
+        "international": false,
+        "invoice_id": null,
+        "method": "upi",
+        "notes": [],
+        "order_id": "order_RZYHB2fUAVzfei",
+        "refund_status": "partial",
+        "status": "captured",
+        "tax": 4212,
+        "upi": {
+          "flow": "collect",
+          "vpa": "success@razorpay"
+        },
+        "vpa": "success@razorpay",
+        "wallet": null
+      }
+    },
+    "refund": {
+      "entity": {
+        "acquirer_data": {
+          "rrn": "10000000000000"
+        },
+        "amount": 10000,
+        "batch_id": null,
+        "created_at": 1762256215,
+        "currency": "INR",
+        "entity": "refund",
+        "id": "rfnd_RbeI8z0Ey3uIzx",
+        "notes": {
+          "comment": ""
+        },
+        "payment_id": "pay_RZYHMQRf8sB2c0",
+        "receipt": null,
+        "speed_processed": "normal",
+        "speed_requested": "normal",
+        "status": "processed"
+      }
+    }
+  }
+}
+Refund created: {
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "contains": [
+    "refund",
+    "payment"
+  ],
+  "created_at": 1762256352,
+  "entity": "event",
+  "event": "refund.created",
+  "payload": {
+    "payment": {
+      "entity": {
+        "acquirer_data": {
+          "rrn": "106129554543",
+          "upi_transaction_id": "00828CA13F1E952BCC061918FE175805"
+        },
+        "amount": 1170000,
+        "amount_refunded": 1170000,
+        "amount_transferred": 0,
+        "bank": null,
+        "base_amount": 1170000,
+        "captured": true,
+        "card_id": null,
+        "contact": "+918511474162",
+        "created_at": 1761798361,
+        "currency": "INR",
+        "description": "Art Transaction",
+        "email": "aftaba@solguruz.com",
+        "entity": "payment",
+        "error_code": null,
+        "error_description": null,
+        "error_reason": null,
+        "error_source": null,
+        "error_step": null,
+        "fee": 27612,
+        "id": "pay_RZYHMQRf8sB2c0",
+        "international": false,
+        "invoice_id": null,
+        "method": "upi",
+        "notes": [],
+        "order_id": "order_RZYHB2fUAVzfei",
+        "refund_status": "full",
+        "status": "refunded",
+        "tax": 4212,
+        "upi": {
+          "flow": "collect",
+          "vpa": "success@razorpay"
+        },
+        "vpa": "success@razorpay",
+        "wallet": null
+      }
+    },
+    "refund": {
+      "entity": {
+        "acquirer_data": {
+          "rrn": "10000000000000"
+        },
+        "amount": 1160000,
+        "batch_id": null,
+        "created_at": 1762256348,
+        "currency": "INR",
+        "entity": "refund",
+        "id": "rfnd_RbeKThmg72P5VS",
+        "notes": {
+          "comment": ""
+        },
+        "payment_id": "pay_RZYHMQRf8sB2c0",
+        "receipt": null,
+        "speed_processed": "normal",
+        "speed_requested": "optimum",
+        "status": "processed"
+      }
+    }
+  }
+}
+Refund processed: {
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "contains": [
+    "refund",
+    "payment"
+  ],
+  "created_at": 1762256352,
+  "entity": "event",
+  "event": "refund.processed",
+  "payload": {
+    "payment": {
+      "entity": {
+        "acquirer_data": {
+          "rrn": "106129554543",
+          "upi_transaction_id": "00828CA13F1E952BCC061918FE175805"
+        },
+        "amount": 1170000,
+        "amount_refunded": 1170000,
+        "amount_transferred": 0,
+        "bank": null,
+        "base_amount": 1170000,
+        "captured": true,
+        "card_id": null,
+        "contact": "+918511474162",
+        "created_at": 1761798361,
+        "currency": "INR",
+        "description": "Art Transaction",
+        "email": "aftaba@solguruz.com",
+        "entity": "payment",
+        "error_code": null,
+        "error_description": null,
+        "error_reason": null,
+        "error_source": null,
+        "error_step": null,
+        "fee": 27612,
+        "id": "pay_RZYHMQRf8sB2c0",
+        "international": false,
+        "invoice_id": null,
+        "method": "upi",
+        "notes": [],
+        "order_id": "order_RZYHB2fUAVzfei",
+        "refund_status": "full",
+        "status": "refunded",
+        "tax": 4212,
+        "upi": {
+          "flow": "collect",
+          "vpa": "success@razorpay"
+        },
+        "vpa": "success@razorpay",
+        "wallet": null
+      }
+    },
+    "refund": {
+      "entity": {
+        "acquirer_data": {
+          "rrn": "10000000000000"
+        },
+        "amount": 1160000,
+        "batch_id": null,
+        "created_at": 1762256348,
+        "currency": "INR",
+        "entity": "refund",
+        "id": "rfnd_RbeKThmg72P5VS",
+        "notes": {
+          "comment": ""
+        },
+        "payment_id": "pay_RZYHMQRf8sB2c0",
+        "receipt": null,
+        "speed_processed": "normal",
+        "speed_requested": "optimum",
+        "status": "processed"
+      }
+    }
+  }
+}
+
+ "entity": "event",
+  "account_id": "acc_RU1zw9xrrma9WK",
+  "event": "payment.captured",
+  "contains": [
+    "payment"
+  ],
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_RZZSwqzYFTaChx",
+        "entity": "payment",
+        "amount": 1170000,
+        "currency": "INR",
+        "status": "captured",
+        "order_id": "order_RZZSpZEpoaF6jC",
+        "invoice_id": null,
+        "international": false,
+        "method": "upi",
+        "amount_refunded": 0,
+        "refund_status": null,
+        "captured": true,
+        "description": "Art Transaction",
+        "card_id": null,
+        "bank": null,
+        "wallet": null,
+        "vpa": "success@razorpay",
+        "email": "aftaba@solguruz.com",
+        "contact": "+918511474162",
+        "notes": [],
+        "fee": 27612,
+        "tax": 4212,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "rrn": "155708706233",
+          "upi_transaction_id": "7049B4FEA10F43891C711F79C24BB907"
+        },
+        "created_at": 1761802541,
+        "reward": null,
+        "upi": {
+          "vpa": "success@razorpay",
+          "flow": "collect"
+        },
+        "base_amount": 1170000
+      }
+    }
+  },
+  "created_at": 1761802542
+}

@@ -8,6 +8,7 @@ import { Token } from '@/modules/token/entities/token.entity';
 import { Product } from '@/modules/products/entities/product.entity';
 import { CustomArt } from '@/modules/custom-art/entities/custom-art.entity';
 import { Cart } from '@/modules/cart/entities/cart.entity';
+import { Order } from '@/modules/orders/entities/order.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -59,6 +60,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => CustomArt, (customArt) => customArt.artist)
   custom_order: CustomArt[];
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 
   @OneToOne(() => Cart, (cart) => cart.user)
   cart: Cart;

@@ -11,13 +11,13 @@ export const database = (
   username: configService.get('DB_USERNAME'),
   password: configService.get('DB_PASSWORD'),
   database: configService.get('DB_NAME'),
-  ssl: false,
-  // extra: {
-  //   ssl: {
-  //     require: true,
-  //     rejectUnauthorized: false,
-  //   },
-  // },
+  ssl: true,
+  extra: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
   entities: [join(__dirname, '../**/*.entity{.ts,.js}')],
   migrations: [join(__dirname, '../migrations/**/*{.ts,.js}')],
   synchronize: false,

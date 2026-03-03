@@ -34,7 +34,7 @@ export class UserService {
   >(user: TUser, updateUserDto: TProfile) {
     const { name, date_of_birth, phone_number, bio, profile_picture } =
       updateUserDto;
-    const { address, state, city, zip_code } = updateUserDto;
+    const { address, state, city, zip_code, country } = updateUserDto;
 
     const record = await this.userRepository.update(user.id, {
       name,
@@ -55,6 +55,7 @@ export class UserService {
       name,
       phone_number,
       street: address,
+      country,
       state,
       city,
       zip_code,

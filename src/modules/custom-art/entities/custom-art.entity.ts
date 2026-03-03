@@ -1,7 +1,15 @@
+import { Order } from '@/modules/orders/entities/order.entity';
 import { User } from '@/modules/user/entities/user.entity';
 import { BaseEntity } from '@/shared/base.entity';
 import { CUSTOM_REQUEST_STATUS } from '@/shared/constants/enum';
-import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  Index,
+  OneToOne,
+} from 'typeorm';
 
 @Entity()
 export class CustomArt extends BaseEntity {
@@ -45,4 +53,7 @@ export class CustomArt extends BaseEntity {
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'artist_id' })
   artist: User;
+
+  @OneToOne(() => Order, (order) => order.custom_request)
+  order: Order;
 }
