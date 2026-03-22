@@ -1,5 +1,6 @@
+import { User } from '@/modules/user/entities/user.entity';
 import { BaseEntity } from '@/shared/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class AiSuggestion extends BaseEntity {
@@ -11,4 +12,8 @@ export class AiSuggestion extends BaseEntity {
 
   @Column({ type: 'character varying', nullable: true })
   response_image: string;
+
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

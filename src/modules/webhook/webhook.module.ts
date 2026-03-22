@@ -5,9 +5,10 @@ import { WebhookService } from './webhook.service';
 import { PaymentService } from '../payment/payment.service';
 import { Order } from '../orders/entities/order.entity';
 import { Payment } from '../payment/entities/payment.entity';
+import { OrderItem } from '../orders/entities/order-item.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, Payment])],
+  imports: [TypeOrmModule.forFeature([Order, Payment, OrderItem])],
   controllers: [WebhookController],
   providers: [WebhookService, PaymentService],
 })

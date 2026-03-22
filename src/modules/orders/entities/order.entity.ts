@@ -27,7 +27,16 @@ export class Order extends BaseEntity {
   total_amount: number;
 
   @Column({ type: 'character varying', nullable: true })
+  courier_name: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  shipped_at: string;
+
+  @Column({ type: 'character varying', nullable: true })
   tracking_number: string;
+
+  @Column({ type: 'character varying', nullable: true })
+  courier_reciept: string;
 
   @Index()
   @ManyToOne(() => User, (user) => user.orders)
@@ -45,10 +54,9 @@ export class Order extends BaseEntity {
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
   items: OrderItem[];
 
-  @OneToMany(() => Payment, (payment) => payment.order)
-  payment: Payment[];
+  @OneToOne(() => Payment, (payment) => payment.order)
+  payment: Payment;
 
-  @Exclude()
   @Column({ type: 'json', nullable: true })
   razorpay_order: string;
 

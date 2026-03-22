@@ -2,6 +2,7 @@ import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { Order } from './order.entity';
 import { Product } from '../../products/entities/product.entity';
 import { BaseEntity } from '@/shared/base.entity';
+import { ORDER_STATUS } from '@/shared/constants/enum';
 
 @Entity('order_items')
 export class OrderItem extends BaseEntity {
@@ -17,6 +18,21 @@ export class OrderItem extends BaseEntity {
 
   @Column({ type: 'integer', nullable: false })
   quantity: number;
+
+  @Column({ type: 'enum', enum: ORDER_STATUS, default: ORDER_STATUS.PENDING })
+  status: ORDER_STATUS;
+
+  @Column({ type: 'timestamp', nullable: true })
+  shipped_at: string;
+
+  @Column({ type: 'character varying', nullable: true })
+  courier_name: string;
+
+  @Column({ type: 'character varying', nullable: true })
+  tracking_number: string;
+
+  @Column({ type: 'character varying', nullable: true })
+  courier_reciept: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;

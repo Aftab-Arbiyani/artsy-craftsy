@@ -9,6 +9,7 @@ import { Product } from '@/modules/products/entities/product.entity';
 import { CustomArt } from '@/modules/custom-art/entities/custom-art.entity';
 import { Cart } from '@/modules/cart/entities/cart.entity';
 import { Order } from '@/modules/orders/entities/order.entity';
+import { AiSuggestion } from '@/modules/ai-suggestion/entities/ai-suggestion.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -66,4 +67,7 @@ export class User extends BaseEntity {
 
   @OneToOne(() => Cart, (cart) => cart.user)
   cart: Cart;
+
+  @OneToMany(() => AiSuggestion, (aiSuggestion) => aiSuggestion.user)
+  ai_suggestions: AiSuggestion[];
 }

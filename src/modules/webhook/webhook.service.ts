@@ -9,12 +9,16 @@ import {
   PAYMENT_STATUS,
   REFUND_STATUS,
 } from '@/shared/constants/enum';
+import { OrderItem } from '../orders/entities/order-item.entity';
 
 @Injectable()
 export class WebhookService {
   constructor(
     private readonly paymentService: PaymentService,
-    @InjectRepository(Order) private orderRepository: Repository<Order>,
+    @InjectRepository(Order)
+    private readonly orderRepository: Repository<Order>,
+    @InjectRepository(OrderItem)
+    private readonly orderItemRepository: Repository<OrderItem>,
   ) {}
 
   async handleRazorpayPaymentAuthorized(data: any, razorpaySignature: string) {
@@ -114,6 +118,11 @@ export class WebhookService {
       updated_at: new Date(),
     });
 
+    await this.orderItemRepository.update(
+      { order: { id: order.id } },
+      { status: ORDER_STATUS.CANCELLED },
+    );
+
     await this.paymentService.updateWhere(
       { id: payment.id },
       {
@@ -148,6 +157,11 @@ export class WebhookService {
       updated_at: new Date(),
     });
 
+    await this.orderItemRepository.update(
+      { order: { id: order.id } },
+      { status: ORDER_STATUS.CANCELLED },
+    );
+
     await this.paymentService.updateWhere(
       { id: payment.id },
       {
@@ -176,6 +190,11 @@ export class WebhookService {
       status: ORDER_STATUS.CONFIRMED,
       updated_at: new Date(),
     });
+
+    await this.orderItemRepository.update(
+      { order: { id: order.id } },
+      { status: ORDER_STATUS.CONFIRMED },
+    );
 
     await this.paymentService.updateWhere(
       { order: { id: order.id } },
