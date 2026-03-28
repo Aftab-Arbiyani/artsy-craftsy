@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { AiSuggestion } from './entities/ai-suggestion.entity';
 import { CreateAiSuggestionDto } from './dto/create-ai-suggestion.dto';
-import { UpdateAiSuggestionDto } from './dto/update-ai-suggestion.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AiSuggestionService {
-  create(createAiSuggestionDto: CreateAiSuggestionDto) {
-    return 'This action adds a new aiSuggestion';
+  constructor(
+    @InjectRepository(AiSuggestion)
+    private readonly aiSuggestionRepository: Repository<AiSuggestion>,
+  ) {}
+
+  async countThisMonth(userId: string): Promise<number> {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    return this.aiSuggestionRepository
+      .createQueryBuilder('ai')
+      .where('ai.user_id = :userId', { userId })
+      .andWhere('ai.created_at >= :start', { start: startOfMonth })
+      .andWhere('ai.created_at < :end', { end: startOfNextMonth })
+      .getCount();
   }
 
-  findAll() {
-    return `This action returns all aiSuggestion`;
-  }
+  async create(
+    createAiSuggestionDto: CreateAiSuggestionDto,
+  ): Promise<AiSuggestion> {
+    const data = await this.aiSuggestionRepository.save(
+      plainToInstance(AiSuggestion, createAiSuggestionDto),
+    );
 
-  findOne(id: number) {
-    return `This action returns a #${id} aiSuggestion`;
-  }
-
-  update(id: number, updateAiSuggestionDto: UpdateAiSuggestionDto) {
-    return `This action updates a #${id} aiSuggestion`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} aiSuggestion`;
+    return plainToInstance(AiSuggestion, data);
   }
 }

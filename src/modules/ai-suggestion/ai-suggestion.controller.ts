@@ -1,34 +1,77 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  ForbiddenException,
+} from '@nestjs/common';
 import { AiSuggestionService } from './ai-suggestion.service';
 import { CreateAiSuggestionDto } from './dto/create-ai-suggestion.dto';
-import { UpdateAiSuggestionDto } from './dto/update-ai-suggestion.dto';
+import response from '@/shared/helpers/response';
+import { generateImageWithImagen } from '@/shared/helpers/ai-service';
+import { AuthGuard } from '@nestjs/passport';
+import { IRequest } from '@/shared/constants/types';
+import { MEDIA_FOLDER } from '@/shared/constants/enum';
+import { UploadService } from '../upload/upload.service';
 
 @Controller('ai-suggestion')
 export class AiSuggestionController {
-  constructor(private readonly aiSuggestionService: AiSuggestionService) {}
+  constructor(
+    private readonly aiSuggestionService: AiSuggestionService,
+    private readonly uploadService: UploadService,
+  ) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() createAiSuggestionDto: CreateAiSuggestionDto) {
-    return this.aiSuggestionService.create(createAiSuggestionDto);
-  }
+  async create(
+    @Body() createAiSuggestionDto: CreateAiSuggestionDto,
+    @Req() req: IRequest,
+  ) {
+    try {
+      createAiSuggestionDto.user = req.user.id;
 
-  @Get()
-  findAll() {
-    return this.aiSuggestionService.findAll();
-  }
+      const usageThisMonth = await this.aiSuggestionService.countThisMonth(
+        req.user.id,
+      );
+      if (usageThisMonth >= 2) {
+        return response.badRequest({
+          message:
+            'You have reached the limit for AI studio usage for this month.',
+          data: {},
+        });
+      }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.aiSuggestionService.findOne(+id);
-  }
+      const image = await generateImageWithImagen({
+        prompt: createAiSuggestionDto.prompt,
+      });
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAiSuggestionDto: UpdateAiSuggestionDto) {
-    return this.aiSuggestionService.update(+id, updateAiSuggestionDto);
-  }
+      if (!image) {
+        return response.badRequest({
+          message:
+            'Failed to generate image. Please try again after some time.',
+          data: {},
+        });
+      }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.aiSuggestionService.remove(+id);
+      const data = await this.uploadService.uploadGeneratedFileOnS3(
+        image,
+        MEDIA_FOLDER.products,
+      );
+
+      createAiSuggestionDto.response_image = data.image;
+      const result = await this.aiSuggestionService.create(
+        createAiSuggestionDto,
+      );
+      return response.successResponse({
+        message: 'AI suggestion created successfully',
+        data: result,
+      });
+    } catch (error) {
+      if (error instanceof ForbiddenException) {
+        return response.badRequest({ message: error.message, data: {} });
+      }
+      return response.failureResponse(error);
+    }
   }
 }

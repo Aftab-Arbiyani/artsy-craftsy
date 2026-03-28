@@ -9,6 +9,8 @@ import { CONSTANT } from '@/shared/constants/message';
 import { User } from '../user/entities/user.entity';
 import { CreateCustomOrderDto } from './dto/create-custom-order.dto';
 import { QueryParamsDto } from '@/shared/dto/query-params.dto';
+import { UUIDValidationPipe } from '@/shared/pipe/uuid.validation.pipe';
+import { MarkOrderShippedDto } from './dto/mark-order-shipped.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -105,7 +107,10 @@ export class OrdersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('details/:id')
-  async getOrderDetails(@Param('id') id: string, @Req() req: IRequest) {
+  async getOrderDetails(
+    @Param('id', UUIDValidationPipe) id: string,
+    @Req() req: IRequest,
+  ) {
     try {
       const order = await this.ordersService.getOrderDetails(
         id,
@@ -115,6 +120,83 @@ export class OrdersController {
       return response.successResponse({
         message: CONSTANT.SUCCESS.SUCCESSFULLY('Fetched order details'),
         data: order,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('assigned-orders')
+  async getAssignedOrders(
+    @Query() queryParamsDto: QueryParamsDto,
+    @Req() req: IRequest,
+  ) {
+    try {
+      const [orders, count] = await this.ordersService.getAssignedOrders(
+        queryParamsDto,
+        req.user as User,
+      );
+
+      return response.successResponseWithPagination({
+        message: CONSTANT.SUCCESS.SUCCESSFULLY('Fetched assigned orders'),
+        total: count,
+        limit: +queryParamsDto.take,
+        offset: +queryParamsDto.skip,
+        data: orders,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('assigned-order-details/:id')
+  async getAssignedOrderDetails(
+    @Param('id', UUIDValidationPipe) id: string,
+    @Req() req: IRequest,
+  ) {
+    try {
+      const order = await this.ordersService.getAssignedOrderDetails(
+        id,
+        req.user as User,
+      );
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('Order details'),
+        data: order,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('mark-shipped')
+  async markOrderShipped(@Body() markOrderShippedDto: MarkOrderShippedDto) {
+    try {
+      await this.ordersService.markOrderShipped(markOrderShippedDto);
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.SUCCESSFULLY('Order marked as shipped'),
+        data: {},
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('custom-mark-shipped')
+  async markCustomOrderShipped(
+    @Body() markOrderShippedDto: MarkOrderShippedDto,
+  ) {
+    try {
+      await this.ordersService.markCustomOrderShipped(markOrderShippedDto);
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.SUCCESSFULLY('Order marked as shipped'),
+        data: {},
       });
     } catch (error) {
       return response.failureResponse(error);

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
-import { DataSource, In, Not, Repository } from 'typeorm';
+import { DataSource, In, MoreThan, Not, Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { plainToInstance } from 'class-transformer';
 import { RazorPayService } from '../razor-pay/razor-pay.service';
@@ -18,12 +18,16 @@ import { User } from '../user/entities/user.entity';
 import { CreateCustomOrderDto } from './dto/create-custom-order.dto';
 import { CustomArt } from '../custom-art/entities/custom-art.entity';
 import { QueryParamsDto } from '@/shared/dto/query-params.dto';
+import { MarkOrderShippedDto } from './dto/mark-order-shipped.dto';
+import { OrderItem } from './entities/order-item.entity';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    @InjectRepository(OrderItem)
+    private readonly orderItemRepository: Repository<OrderItem>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Cart)
@@ -37,8 +41,11 @@ export class OrdersService {
     const productIds = items.map((item) => item.product);
 
     const products = await this.productRepository.find({
-      where: { id: In(productIds) },
+      where: { id: In(productIds), quantity: MoreThan(0) },
     });
+
+    if (!products?.length)
+      throw new Error('Insufficient stock for the requested products');
 
     const cart = await this.cartRepository.findOne({
       where: { user: { id: user.id } },
@@ -211,5 +218,125 @@ export class OrdersService {
     }
 
     return plainToInstance(Order, order);
+  }
+
+  async getAssignedOrders(
+    queryParamsDto: QueryParamsDto,
+    user: User,
+  ): Promise<[Order[], number]> {
+    const { take, skip, order } = queryParamsDto;
+
+    const [orders, count] = await this.orderRepository.findAndCount({
+      relations: { items: { product: { user: true } }, custom_request: true },
+      select: {
+        id: true,
+        order_number: true,
+        status: true,
+        total_amount: true,
+        tracking_number: true,
+        shipped_at: true,
+        created_at: true,
+        custom_request: {
+          id: true,
+        },
+        items: { product: { id: true, user: { id: true } } },
+      },
+      where: [
+        {
+          items: { product: { user: { id: user.id } } },
+          status: Not(ORDER_STATUS.PENDING),
+        },
+        {
+          custom_request: { artist: { id: user.id } },
+          status: Not(ORDER_STATUS.PENDING),
+        },
+      ],
+      take: +take,
+      skip: +skip,
+      order,
+    });
+
+    return [plainToInstance(Order, orders), count];
+  }
+
+  async getAssignedOrderDetails(id: string, user: User): Promise<Order> {
+    const order = await this.orderRepository.findOne({
+      relations: {
+        items: { product: { user: true, media: true } },
+        custom_request: { artist: true },
+      },
+      where: [
+        {
+          id,
+          items: { product: { user: { id: user.id } } },
+        },
+        {
+          id,
+          custom_request: { artist: { id: user.id } },
+        },
+      ],
+    });
+
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    return plainToInstance(Order, order);
+  }
+
+  async markOrderShipped(markOrderShippedDto: MarkOrderShippedDto) {
+    const {
+      order,
+      courier_reciept,
+      tracking_number,
+      courier_name,
+      items = [],
+    } = markOrderShippedDto;
+
+    const orderData = await this.orderRepository.findOne({
+      where: { id: order },
+    });
+
+    if (!orderData) {
+      throw new Error('Order not found');
+    }
+
+    await this.orderRepository.update(order, {
+      status: ORDER_STATUS.SHIPPED,
+    });
+
+    if (items.length) {
+      await this.orderItemRepository.update(
+        { id: In(items) },
+        {
+          status: ORDER_STATUS.SHIPPED,
+          courier_reciept,
+          tracking_number,
+          courier_name,
+          shipped_at: new Date().toISOString(),
+        },
+      );
+    }
+  }
+
+  async markCustomOrderShipped(markOrderShippedDto: MarkOrderShippedDto) {
+    const { order, courier_reciept, tracking_number, courier_name } =
+      markOrderShippedDto;
+
+    const orderData = await this.orderRepository.findOne({
+      where: { id: order },
+    });
+
+    if (!orderData) {
+      throw new Error('Order not found');
+    }
+
+    await this.orderRepository.update(order, {
+      status: ORDER_STATUS.SHIPPED,
+      shipped_at: new Date().toISOString(),
+      courier_reciept: courier_reciept,
+      tracking_number: tracking_number,
+      courier_name: courier_name,
+    });
   }
 }

@@ -26,7 +26,7 @@ export class RazorPayService {
   }
 
   async createRefund(order: Order, currency = 'INR') {
-    const payment = order?.payment[0] || null;
+    const payment = order?.payment || null;
     const options = {
       amount: order.total_amount * 100 * 0.9, // Refund 90% of total amount in paise
       speed: 'normal',

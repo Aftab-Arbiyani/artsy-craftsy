@@ -1,12 +1,12 @@
 import { Order } from '@/modules/orders/entities/order.entity';
 import { BaseEntity } from '@/shared/base.entity';
 import { PAYMENT_METHOD, PAYMENT_STATUS } from '@/shared/constants/enum';
-import { Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 import { Column } from 'typeorm';
 
 @Entity('payments')
 export class Payment extends BaseEntity {
-  @ManyToOne(() => Order, { onDelete: 'CASCADE' })
+  @OneToOne(() => Order, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'order_id' })
   order: Order;
 

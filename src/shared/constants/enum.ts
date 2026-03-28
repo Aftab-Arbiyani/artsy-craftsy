@@ -55,6 +55,7 @@ export enum MEDIA_FOLDER {
   profiles = 'profiles',
   banners = 'banners',
   categories = 'categories',
+  order_receipts = 'order_receipts',
 }
 
 export enum ORDER_STATUS {

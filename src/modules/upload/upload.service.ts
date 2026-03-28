@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import { ConfigService } from '@nestjs/config';
 import { Multer } from 'multer';
 import { MEDIA_FOLDER } from '@/shared/constants/enum';
+import * as path from 'path';
 
 @Injectable()
 export class UploadService {
@@ -90,5 +91,35 @@ export class UploadService {
 
     const deleteCommand = new DeleteObjectCommand(params);
     await this.s3Client.send(deleteCommand);
+  }
+
+  async uploadGeneratedFileOnS3(filename: string, awsFolder: MEDIA_FOLDER) {
+    const stream = fs.createReadStream(`./public/images/${filename}`);
+
+    const params = {
+      Bucket: this.config.get('S3_IMAGE_BUCKET'),
+      Key: `${awsFolder}/${filename}`,
+      Body: stream,
+      ContentType: this.getMimeType(filename),
+    };
+
+    const command = new PutObjectCommand(params);
+    await this.s3Client.send(command);
+    fs.unlinkSync(`./public/images/${filename}`);
+
+    return {
+      image: `${awsFolder}/${filename}`,
+    };
+  }
+
+  getMimeType(filePath: string): string {
+    const ext = path.extname(filePath).replace('.', '').toLowerCase();
+    const types: Record<string, string> = {
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      webp: 'image/webp',
+    };
+    return types[ext] ?? 'image/jpeg';
   }
 }
