@@ -7,10 +7,11 @@ import { RazorPayService } from '../razor-pay/razor-pay.service';
 import { Product } from '../products/entities/product.entity';
 import { Cart } from '../cart/entities/cart.entity';
 import { OrderItem } from './entities/order-item.entity';
+import { EmailService } from '@/shared/helpers/send-mail';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order, Product, Cart, OrderItem])],
   controllers: [OrdersController],
-  providers: [OrdersService, RazorPayService],
+  providers: [OrdersService, RazorPayService, EmailService],
 })
 export class OrdersModule {}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmation</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f9fafb; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9fafb; padding:40px 10px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;">
+          
+          <tr>
+            <td align="center" style="padding:60px 40px 30px 40px; background: linear-gradient(to bottom, #ecfdf5 0%, #ffffff 100%);">
+              <div style="margin-bottom: 20px;">
+                <img src="https://d1dmb2897axey0.cloudfront.net/default/logo.png" 
+                     alt="Art & Craft Studio" 
+                     width="120" 
+                     style="display:block; margin: 0 auto; border-radius: 15px;" />
+              </div>
+              <h1 style="color:#1f2937; margin:0; font-size:28px; font-weight:800; letter-spacing:-0.5px; text-align: center;">
+                Art & Craft Studio
+              </h1>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 50px; text-align:center;">
+              <div style="display:inline-block; padding:6px 16px; background-color:#d1fae5; color:#065f46; border-radius:30px; font-size:13px; font-weight:700; text-transform:uppercase; margin-bottom:25px;">
+                🎉 Order Confirmed
+              </div>
+              <h2 style="color:#111827; font-size:32px; margin:0 0 10px 0; line-height:1.1; font-weight: 800;">
+                Thanks for your order!
+              </h2>
+              <p style="color:#6b7280; font-size:16px; margin-bottom:30px;">
+                Order #<%= orderId %> • We're getting it ready for you.
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; background-color: #f8fafc; border-radius: 16px;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 16px; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Order Summary</h3>
+                    <% items.forEach(function(item) { %>
+                    <table width="100%" style="margin-bottom: 15px;">
+                      <tr>
+                        <td style="font-size: 15px; color: #4b5563;">
+                          <strong><%= item.quantity %>x</strong> <%= item.product.name %>
+                        </td>
+                        <td align="right" style="font-size: 15px; color: #1f2937; font-weight: 600;">
+                          <%= item.price %> Rs.
+                        </td>
+                      </tr>
+                    </table>
+                    <% }); %>
+
+                    <table width="100%" style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                      <tr>
+                        <td style="font-size: 18px; color: #111827; font-weight: 800; padding-top: 10px;">Total</td>
+                        <td align="right" style="font-size: 18px; color: #6366f1; font-weight: 800; padding-top: 10px;"><%= totalAmount %> Rs.</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:30px 50px; text-align:left;">
+              <h4 style="margin:0 0 8px 0; color:#1e293b; font-size:14px; text-transform:uppercase; letter-spacing:1px;">Shipping To:</h4>
+              <p style="margin:0; color:#4b5563; font-size:15px; line-height:1.5;">
+                <%= address.street %><br>
+                <%= address.city %>, <%= address.state %> <%= address.zip %>
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="center" style="padding:0 50px 45px 50px;">
+              <table cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="background-color:#6366f1; border-radius:14px;">
+                    <a href="https://artsycraftsy.com/account/orders" style="display:inline-block; padding:18px 45px; font-size:16px; color:#ffffff; text-decoration:none; font-weight:bold; letter-spacing:0.5px;">
+                      View Order Details
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:40px 50px; text-align:center; border-top: 1px solid #f3f4f6;">
+              <p style="font-size:14px; color:#4b5563; margin-bottom:10px;">
+                <strong>Excited to see what you create!</strong><br>
+                Tag us @Art & Craft Studio for a chance to be featured.
+              </p>
+              <p style="font-size:12px; color:#9ca3af; margin:30px 0 0 0; line-height:1.5;">
+                &copy; <%= new Date().getFullYear() %> Art & Craft Studio Inc.<br>
+                Need help? Reply to this email.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
