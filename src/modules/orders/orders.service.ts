@@ -20,6 +20,9 @@ import { CustomArt } from '../custom-art/entities/custom-art.entity';
 import { QueryParamsDto } from '@/shared/dto/query-params.dto';
 import { MarkOrderShippedDto } from './dto/mark-order-shipped.dto';
 import { OrderItem } from './entities/order-item.entity';
+import { renderFile } from 'ejs';
+import { resolve } from 'path';
+import { EmailService } from '@/shared/helpers/send-mail';
 
 @Injectable()
 export class OrdersService {
@@ -34,6 +37,7 @@ export class OrdersService {
     private readonly cartRepository: Repository<Cart>,
     private readonly razorPayService: RazorPayService,
     private readonly dataSource: DataSource,
+    private readonly emailService: EmailService,
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto, user: any): Promise<Order> {
@@ -164,13 +168,17 @@ export class OrdersService {
         status: ORDER_STATUS.CANCELLED,
         cancelled_at: new Date().toISOString(),
         cancel_reason: cancelReason,
+        refund_amount: order.total_amount * 0.9, // Assuming a 10% cancellation fee
       });
 
       await this.razorPayService.createRefund(order);
 
       const updatedOrder = await manager.findOne(Order, {
+        relations: { user: true },
         where: { id: order.id },
       });
+
+      await this.sendCancelOrderEmail(updatedOrder);
 
       return plainToInstance(Order, updatedOrder);
     });
@@ -281,6 +289,33 @@ export class OrdersService {
       throw new Error('Order not found');
     }
 
+    let amountReceivable = 0;
+
+    if (
+      [
+        ORDER_STATUS.CONFIRMED,
+        ORDER_STATUS.DELIVERED,
+        ORDER_STATUS.SHIPPED,
+        ORDER_STATUS.PROCESSING,
+      ].includes(order.status)
+    ) {
+      if (order?.items?.length) {
+        amountReceivable = order.items.reduce((total, item) => {
+          const product = item.product;
+          const itemAmount =
+            (product.amount_receivable || product.listing_price) *
+            item.quantity;
+          return total + itemAmount;
+        }, 0);
+      } else if (
+        order.custom_request &&
+        order.custom_request.status === CUSTOM_REQUEST_STATUS.ORDERED
+      ) {
+        amountReceivable = Number(order.custom_request.amount_receivable);
+      }
+    }
+
+    Object.assign(order, { amount_receivable: amountReceivable });
     return plainToInstance(Order, order);
   }
 
@@ -337,6 +372,26 @@ export class OrdersService {
       courier_reciept: courier_reciept,
       tracking_number: tracking_number,
       courier_name: courier_name,
+    });
+  }
+
+  async sendCancelOrderEmail(order: Order) {
+    const ejsTemplate = await renderFile(
+      resolve(
+        __dirname,
+        `../../../src/shared/ejs-templates/order-cancelled.ejs`,
+      ),
+      {
+        name: order.user.name,
+        orderId: order.order_number,
+        refundAmount: order.refund_amount,
+      },
+    );
+
+    await this.emailService.sendMail({
+      to: order.user.email,
+      subject: 'Order Cancelled - Art & Craft Studio',
+      html: ejsTemplate,
     });
   }
 }

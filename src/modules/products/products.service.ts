@@ -13,6 +13,8 @@ import { Product } from './entities/product.entity';
 import { plainToInstance } from 'class-transformer';
 import { ProductMedia } from './entities/product-media.entity';
 import { UploadService } from '../upload/upload.service';
+import { Category } from '../category/entities/category.entity';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -22,6 +24,10 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(ProductMedia)
     private readonly productMediaRepository: Repository<ProductMedia>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -98,5 +104,15 @@ export class ProductsService {
       { deleted_at: new Date().toISOString() },
     );
     return record;
+  }
+
+  async getCategories(options: FindManyOptions<Category>) {
+    const list = await this.categoryRepository.find(options);
+    return plainToInstance(Category, list);
+  }
+
+  async getUsers(options: FindManyOptions<User>) {
+    const list = await this.userRepository.find(options);
+    return plainToInstance(User, list);
   }
 }

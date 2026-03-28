@@ -73,7 +73,7 @@ export class Order extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true })
   completed_at: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'bigint', nullable: true })
   refunded_at: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })

@@ -24,6 +24,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { RazorPayService } from './modules/razor-pay/razor-pay.service';
 import { WebhookModule } from './modules/webhook/webhook.module';
+import { UserBankAccountModule } from './modules/user-bank-account/user-bank-account.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { WebhookModule } from './modules/webhook/webhook.module';
     OrdersModule,
     PaymentModule,
     WebhookModule,
+    UserBankAccountModule,
   ],
   controllers: [AppController],
   providers: [

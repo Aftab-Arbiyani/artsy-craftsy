@@ -17,10 +17,17 @@ import response from '@/shared/helpers/response';
 import { CONSTANT } from '@/shared/constants/message';
 import { AuthGuard } from '@nestjs/passport';
 import { IRequest } from '@/shared/constants/types';
-import { In, LessThanOrEqual, MoreThan, MoreThanOrEqual, Not } from 'typeorm';
+import {
+  ILike,
+  In,
+  LessThanOrEqual,
+  MoreThan,
+  MoreThanOrEqual,
+  Not,
+} from 'typeorm';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { UUIDValidationPipe } from '@/shared/pipe/uuid.validation.pipe';
-import { PRODUCT_STATUS } from '@/shared/constants/enum';
+import { PRODUCT_STATUS, USER_TYPE } from '@/shared/constants/enum';
 import { QueryParamsDto } from '@/shared/dto/query-params.dto';
 
 @Controller('products')
@@ -73,6 +80,7 @@ export class ProductsController {
       artist_id = [],
       price_from = 0,
       price_to = 0,
+      search = '',
     } = queryParams;
     const where = { status: PRODUCT_STATUS.ACTIVE, quantity: MoreThan(0) };
 
@@ -98,6 +106,10 @@ export class ProductsController {
       Object.assign(where, {
         listing_price: LessThanOrEqual(price_to),
       });
+    }
+
+    if (search) {
+      Object.assign(where, { title: ILike(`%${search}%`) });
     }
 
     const [data, count] = await this.productsService.findAll({
@@ -226,6 +238,53 @@ export class ProductsController {
       return response.successResponse({
         message: CONSTANT.SUCCESS.RECORD_FOUND('Product'),
         data: product,
+      });
+    } catch (error) {
+      return response.failureResponse(error);
+    }
+  }
+
+  @Get('search')
+  async searchProducts(@Query('search') search: string) {
+    try {
+      const [products] = await this.productsService.findAll({
+        relations: { media: true },
+        select: {
+          id: true,
+          title: true,
+          created_at: true,
+          media: { id: true, file_path: true },
+        },
+        where: [
+          {
+            title: ILike(`%${search}%`),
+            quantity: MoreThan(0),
+            status: PRODUCT_STATUS.ACTIVE,
+          },
+          {
+            description: ILike(`%${search}%`),
+            quantity: MoreThan(0),
+            status: PRODUCT_STATUS.ACTIVE,
+          },
+        ],
+        take: 5,
+        skip: 0,
+        order: { created_at: 'DESC' },
+      });
+
+      const categories = await this.productsService.getCategories({
+        select: { id: true, name: true, image: true },
+        where: { name: ILike(`%${search}%`) },
+      });
+
+      const users = await this.productsService.getUsers({
+        select: { id: true, name: true, profile_picture: true },
+        where: { name: ILike(`%${search}%`), type: USER_TYPE.ARTIST },
+      });
+
+      return response.successResponse({
+        message: CONSTANT.SUCCESS.RECORD_FOUND('Search Results'),
+        data: { products, categories, users },
       });
     } catch (error) {
       return response.failureResponse(error);

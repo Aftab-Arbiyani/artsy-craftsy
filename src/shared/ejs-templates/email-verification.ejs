@@ -1,151 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Email Verification</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #f9fafb;
-            margin: 0;
-            padding: 0;
-        }
+    <title>Verify Your Email</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f9fafb;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    "
+  >
+    <table
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      style="background-color: #f9fafb; padding: 40px 10px"
+    >
+      <tr>
+        <td align="center">
+          <table
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            style="
+              max-width: 600px;
+              background: #ffffff;
+              border-radius: 24px;
+              overflow: hidden;
+              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+              border: 1px solid #e5e7eb;
+            "
+          >
+            <tr>
+              <td
+                align="center"
+                style="
+                  padding: 60px 40px 30px 40px;
+                  background: linear-gradient(
+                    to bottom,
+                    #f5f3ff 0%,
+                    #ffffff 100%
+                  );
+                "
+              >
+                <div style="margin-bottom: 20px">
+                  <img
+                    src="https://d1dmb2897axey0.cloudfront.net/default/logo.png"
+                    alt="Art & Craft Studio"
+                    width="120"
+                    style="display: block; margin: 0 auto; border-radius: 15px"
+                  />
+                </div>
 
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 24px rgba(59, 130, 246, 0.10), 0 2px 4px rgba(0, 0, 0, 0.04);
-            text-align: center;
-            border: 2px solid #3B82F6;
-            position: relative;
-            overflow: hidden;
-        }
+                <h1
+                  style="
+                    color: #1f2937;
+                    margin: 0;
+                    font-size: 28px;
+                    font-weight: 800;
+                    letter-spacing: -0.5px;
+                    text-align: center;
+                  "
+                >
+                  Art & Craft Studio
+                </h1>
+              </td>
+            </tr>
 
-        .container::before {
-            content: "";
-            position: absolute;
-            top: -60px;
-            left: -60px;
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle at 60px 60px, #3B82F6 0%, #f9fafb 100%);
-            opacity: 0.12;
-            z-index: 0;
-        }
+            <tr>
+              <td style="padding: 0 50px; text-align: center">
+                <div
+                  style="
+                    display: inline-block;
+                    padding: 6px 16px;
+                    background-color: #e0e7ff;
+                    color: #4338ca;
+                    border-radius: 30px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    margin-bottom: 25px;
+                  "
+                >
+                  🎨 Welcome to the Studio
+                </div>
 
-        .container::after {
-            content: "";
-            position: absolute;
-            bottom: -60px;
-            right: -60px;
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle at 120px 120px, #3B82F6 0%, #f9fafb 100%);
-            opacity: 0.10;
-            z-index: 0;
-        }
+                <h2
+                  style="
+                    color: #111827;
+                    font-size: 32px;
+                    margin: 0 0 20px 0;
+                    line-height: 1.1;
+                    font-weight: 800;
+                  "
+                >
+                  Let's verify your email
+                </h2>
 
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #3B82F6;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-            letter-spacing: 1px;
-        }
+                <p
+                  style="
+                    color: #4b5563;
+                    font-size: 17px;
+                    line-height: 1.6;
+                    margin: 0;
+                  "
+                >
+                  Hi <strong><%= name %></strong>, <br />
+                  Ready to start creating? Please click the button below to
+                  confirm your email and unlock your full Art & Craft Studio
+                  experience.
+                </p>
+              </td>
+            </tr>
 
-        h2 {
-            color: #1e293b;
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 1;
-        }
+            <tr>
+              <td align="center" style="padding: 45px 50px">
+                <table cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td
+                      align="center"
+                      style="
+                        background-color: #6366f1;
+                        border-radius: 14px;
+                        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+                      "
+                    >
+                      <a
+                        href="<%= redirectUrl %>"
+                        style="
+                          display: inline-block;
+                          padding: 20px 45px;
+                          font-size: 18px;
+                          color: #ffffff;
+                          text-decoration: none;
+                          font-weight: bold;
+                          letter-spacing: 0.5px;
+                        "
+                      >
+                        Verify My Account
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin-top: 25px; font-size: 14px; color: #9ca3af">
+                  Button not working? Use the link in the footer below.
+                </p>
+              </td>
+            </tr>
 
-        p {
-            color: #334155;
-            position: relative;
-            z-index: 1;
-        }
+            <tr>
+              <td style="padding: 0 50px">
+                <div
+                  style="height: 1px; background-color: #f3f4f6; width: 100%"
+                ></div>
+              </td>
+            </tr>
 
-        .button {
-            display: inline-block;
-            padding: 14px 32px;
-            background: linear-gradient(90deg, #3B82F6 0%, #6366F1 100%);
-            color: #ffffff;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 700;
-            margin-top: 24px;
-            word-break: break-word;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-            transition: background 0.2s, box-shadow 0.2s;
-            position: relative;
-            z-index: 1;
-        }
+            <tr>
+              <td style="padding: 40px 50px; text-align: center">
+                <p
+                  style="
+                    font-size: 13px;
+                    color: #6b7280;
+                    margin-bottom: 10px;
+                    line-height: 1.5;
+                  "
+                >
+                  <strong>Quick Link:</strong><br />
+                  <a
+                    href="<%= redirectUrl %>"
+                    style="
+                      color: #6366f1;
+                      text-decoration: underline;
+                      word-break: break-all;
+                    "
+                    ><%= redirectUrl %></a
+                  >
+                </p>
 
-        .button:hover {
-            background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
-            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.22);
-        }
+                <p
+                  style="
+                    font-size: 12px;
+                    color: #9ca3af;
+                    margin: 30px 0 0 0;
+                    line-height: 1.5;
+                  "
+                >
+                  &copy; <%= new Date().getFullYear() %> Art&Craft Studio
+                  Inc.<br />
+                  You’re receiving this because you’re about to be awesome.
+                </p>
+              </td>
+            </tr>
+          </table>
 
-        .footer {
-            font-size: 12px;
-            color: #9ca3af;
-            margin-top: 30px;
-            position: relative;
-            z-index: 1;
-        }
-
-        @media only screen and (max-width: 600px) {
-            .container {
-                max-width: 100% !important;
-                margin: 10px;
-                padding: 16px !important;
-                border-radius: 0 !important;
-                box-shadow: none !important;
-            }
-
-            .logo {
-                font-size: 20px !important;
-            }
-
-            h2 {
-                font-size: 20px !important;
-            }
-
-            .button {
-                width: 100% !important;
-                padding: 16px 0 !important;
-                font-size: 16px !important;
-            }
-
-            p,
-            .footer {
-                font-size: 15px !important;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <div class="logo">🎨 ArtsyCraftsy</div>
-        <h2>Verify Your Email Address</h2>
-        <p>Hi <%= name %>,</p>
-        <p>Thank you for signing up for ArtsyCraftsy! To complete your registration, please verify your email address by
-            clicking the button below:</p>
-        <a href="<%= redirectUrl %>" class="button" style="color: #fff;">Verify Email</a>
-        <div class="footer">
-            If you didn’t create an account, you can safely ignore this email.<br />
-            &copy; <%= new Date().getFullYear() %> ArtsyCraftsy. All rights reserved.
-        </div>
-    </div>
-</body>
-
+          <table width="100%" style="max-width: 600px; margin-top: 25px">
+            <tr>
+              <td
+                align="center"
+                style="font-size: 12px; color: #9ca3af; padding-bottom: 20px"
+              >
+                If you didn't request this email, you can safely ignore it.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>

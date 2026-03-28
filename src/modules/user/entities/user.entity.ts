@@ -10,6 +10,7 @@ import { CustomArt } from '@/modules/custom-art/entities/custom-art.entity';
 import { Cart } from '@/modules/cart/entities/cart.entity';
 import { Order } from '@/modules/orders/entities/order.entity';
 import { AiSuggestion } from '@/modules/ai-suggestion/entities/ai-suggestion.entity';
+import { UserBankAccount } from '@/modules/user-bank-account/entities/user-bank-account.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -70,4 +71,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => AiSuggestion, (aiSuggestion) => aiSuggestion.user)
   ai_suggestions: AiSuggestion[];
+
+  @OneToMany(() => UserBankAccount, (bankAccount) => bankAccount.user)
+  bank_accounts: UserBankAccount[];
 }

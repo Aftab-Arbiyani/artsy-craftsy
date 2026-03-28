@@ -10,6 +10,9 @@ import {
   REFUND_STATUS,
 } from '@/shared/constants/enum';
 import { OrderItem } from '../orders/entities/order-item.entity';
+import { renderFile } from 'ejs';
+import { resolve } from 'path';
+import { EmailService } from '@/shared/helpers/send-mail';
 
 @Injectable()
 export class WebhookService {
@@ -19,6 +22,7 @@ export class WebhookService {
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(OrderItem)
     private readonly orderItemRepository: Repository<OrderItem>,
+    private readonly emailService: EmailService,
   ) {}
 
   async handleRazorpayPaymentAuthorized(data: any, razorpaySignature: string) {
@@ -99,6 +103,7 @@ export class WebhookService {
     const paymentData = data.payload.payment.entity;
 
     const order = await this.orderRepository.findOne({
+      relations: { user: true },
       where: { razorpay_order_id: paymentData.order_id },
     });
 
@@ -110,7 +115,6 @@ export class WebhookService {
       where: { order: { id: order.id }, razorpay_payment_id: paymentData.id },
     });
 
-    //order cancel email
     await this.orderRepository.update(order.id, {
       status: ORDER_STATUS.CANCELLED,
       cancel_reason: 'Payment Failed',
@@ -122,6 +126,8 @@ export class WebhookService {
       { order: { id: order.id } },
       { status: ORDER_STATUS.CANCELLED },
     );
+
+    await this.sendPaymentFailedEmail(order);
 
     await this.paymentService.updateWhere(
       { id: payment.id },
@@ -138,6 +144,7 @@ export class WebhookService {
     const paymentData = data.payload.payment.entity;
 
     const order = await this.orderRepository.findOne({
+      relations: { user: true },
       where: { razorpay_order_id: paymentData.order_id },
     });
 
@@ -149,7 +156,8 @@ export class WebhookService {
       where: { order: { id: order.id }, razorpay_payment_id: paymentData.id },
     });
 
-    //order cancel email
+    await this.sendPaymentFailedEmail(order);
+
     await this.orderRepository.update(order.id, {
       status: ORDER_STATUS.CANCELLED,
       cancel_reason: 'Payment Voided',
@@ -178,6 +186,7 @@ export class WebhookService {
     const paymentData = data.payload.payment.entity;
 
     const order = await this.orderRepository.findOne({
+      relations: { user: true, items: { product: true }, address: true },
       where: { razorpay_order_id: orderData.id },
     });
 
@@ -195,6 +204,8 @@ export class WebhookService {
       { order: { id: order.id } },
       { status: ORDER_STATUS.CONFIRMED },
     );
+
+    await this.sendOrderConfirmationEmail(order);
 
     await this.paymentService.updateWhere(
       { order: { id: order.id } },
@@ -234,7 +245,7 @@ export class WebhookService {
     const refundData = data.payload.refund.entity;
 
     const payment = await this.paymentService.findOneWhere({
-      relations: { order: true },
+      relations: { order: { user: true } },
       where: { razorpay_payment_id: refundData.payment_id },
     });
 
@@ -242,7 +253,8 @@ export class WebhookService {
       throw new Error('Payment not found.');
     }
 
-    //send email for refund processed
+    await this.sendRefundProcessedEmail(payment.order);
+
     await this.orderRepository.update(
       { id: payment.order.id },
       {
@@ -263,12 +275,71 @@ export class WebhookService {
       throw new Error('Payment not found.');
     }
 
-    //send email for refund failed
     await this.orderRepository.update(
       { id: payment.order.id },
       {
         refund_status: REFUND_STATUS.FAILED,
       },
     );
+  }
+
+  async sendOrderConfirmationEmail(order: Order) {
+    const ejsTemplate = await renderFile(
+      resolve(
+        __dirname,
+        `../../../src/shared/ejs-templates/order-confirmation.ejs`,
+      ),
+      {
+        orderId: order.order_number,
+        items: order.items,
+        address: order.address,
+        totalAmount: order.total_amount,
+      },
+    );
+
+    await this.emailService.sendMail({
+      to: order.user.email,
+      subject: 'Order Confirmation - Art & Craft Studio',
+      html: ejsTemplate,
+    });
+  }
+
+  async sendPaymentFailedEmail(order: Order) {
+    const ejsTemplate = await renderFile(
+      resolve(
+        __dirname,
+        `../../../src/shared/ejs-templates/payment-failed.ejs`,
+      ),
+      {
+        name: order.user.name,
+        orderId: order.order_number,
+      },
+    );
+
+    await this.emailService.sendMail({
+      to: order.user.email,
+      subject: 'Payment Failed - Art & Craft Studio',
+      html: ejsTemplate,
+    });
+  }
+
+  async sendRefundProcessedEmail(order: Order) {
+    const ejsTemplate = await renderFile(
+      resolve(
+        __dirname,
+        `../../../src/shared/ejs-templates/refund-processed.ejs`,
+      ),
+      {
+        name: order.user.name,
+        orderId: order.order_number,
+        refundAmount: order.refund_amount,
+      },
+    );
+
+    await this.emailService.sendMail({
+      to: order.user.email,
+      subject: 'Refund Processed - Art & Craft Studio',
+      html: ejsTemplate,
+    });
   }
 }

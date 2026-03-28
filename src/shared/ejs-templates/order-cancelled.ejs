@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reset Your Password</title>
+    <title>Order Cancelled</title>
   </head>
   <body
     style="
@@ -41,7 +41,7 @@
                   padding: 60px 40px 30px 40px;
                   background: linear-gradient(
                     to bottom,
-                    #f5f3ff 0%,
+                    #f3f4f6 0%,
                     #ffffff 100%
                   );
                 "
@@ -75,8 +75,8 @@
                   style="
                     display: inline-block;
                     padding: 6px 16px;
-                    background-color: #fee2e2;
-                    color: #b91c1c;
+                    background-color: #f3f4f6;
+                    color: #4b5563;
                     border-radius: 30px;
                     font-size: 13px;
                     font-weight: 700;
@@ -84,7 +84,7 @@
                     margin-bottom: 25px;
                   "
                 >
-                  🔒 Password Reset Request
+                  Order #<%= orderId %> • Cancelled
                 </div>
 
                 <h2
@@ -96,7 +96,7 @@
                     font-weight: 800;
                   "
                 >
-                  Forgot your password?
+                  Your order has been cancelled
                 </h2>
 
                 <p
@@ -108,56 +108,71 @@
                   "
                 >
                   Hi <strong><%= name %></strong>, <br />
-                  No worries! It happens to the best of us. Click the button
-                  below to choose a new password and get back to your projects.
+                  We're writing to confirm that your order
+                  <strong>#<%= orderId %></strong> has been cancelled. If you
+                  didn't request this or have questions about your refund, we're
+                  here to help.
                 </p>
               </td>
             </tr>
 
             <tr>
-              <td align="center" style="padding: 45px 50px">
+              <td align="center" style="padding: 40px 50px">
+                <div
+                  style="
+                    background-color: #f8fafc;
+                    border-radius: 16px;
+                    padding: 25px;
+                    border: 1px dashed #cbd5e1;
+                    text-align: center;
+                  "
+                >
+                  <h3
+                    style="margin: 0 0 10px 0; color: #1e293b; font-size: 18px"
+                  >
+                    Refund Status
+                  </h3>
+                  <p
+                    style="
+                      margin: 0;
+                      color: #64748b;
+                      font-size: 15px;
+                      line-height: 1.5;
+                    "
+                  >
+                    A refund of <strong><%= refundAmount %> Rs.</strong> has
+                    been initiated to your original payment method. Most refunds
+                    appear in your account within 10-15 business days.
+                  </p>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" style="padding: 0 50px 45px 50px">
                 <table cellpadding="0" cellspacing="0">
                   <tr>
                     <td
                       align="center"
-                      style="
-                        background-color: #6366f1;
-                        border-radius: 14px;
-                        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-                      "
+                      style="background-color: #1f2937; border-radius: 14px"
                     >
                       <a
-                        href="<%= redirectUrl %>"
+                        href="https://artsycraftsy.com/shop"
                         style="
                           display: inline-block;
-                          padding: 20px 45px;
-                          font-size: 18px;
+                          padding: 18px 40px;
+                          font-size: 16px;
                           color: #ffffff;
                           text-decoration: none;
                           font-weight: bold;
                           letter-spacing: 0.5px;
                         "
                       >
-                        Reset Password
+                        Continue Shopping
                       </a>
                     </td>
                   </tr>
                 </table>
-
-                <div
-                  style="
-                    margin-top: 25px;
-                    padding: 12px;
-                    background-color: #f8fafc;
-                    border-radius: 10px;
-                    display: inline-block;
-                  "
-                >
-                  <p style="font-size: 13px; color: #64748b; margin: 0">
-                    <strong>Security Note:</strong> This link expires in 30
-                    minutes.
-                  </p>
-                </div>
               </td>
             </tr>
 
@@ -171,29 +186,23 @@
 
             <tr>
               <td style="padding: 40px 50px; text-align: center">
-                <p
-                  style="
-                    font-size: 14px;
-                    color: #6b7280;
-                    margin-bottom: 20px;
-                    line-height: 1.5;
-                  "
-                >
-                  If you didn't request this, you can safely ignore this email.
-                  Your password will remain unchanged.
+                <p style="font-size: 15px; color: #4b5563; margin-bottom: 10px">
+                  <strong>Changed your mind?</strong><br />
+                  If this was a mistake, please reach out to our support team
+                  immediately.
                 </p>
 
                 <p
                   style="
                     font-size: 12px;
                     color: #9ca3af;
-                    margin: 0;
+                    margin: 30px 0 0 0;
                     line-height: 1.5;
                   "
                 >
                   &copy; <%= new Date().getFullYear() %> Art & Craft Studio
                   Inc.<br />
-                  Creative HQ: 123 Crafty Lane, Suite 101.
+                  123 Crafty Lane, Creative Suite 101.
                 </p>
               </td>
             </tr>
@@ -205,11 +214,11 @@
                 align="center"
                 style="font-size: 12px; color: #9ca3af; padding-bottom: 20px"
               >
-                Need help?
+                Questions?
                 <a
                   href="mailto:support@artsycraftsy.com"
                   style="color: #6366f1; text-decoration: none"
-                  >Contact Support</a
+                  >Contact our support team</a
                 >
               </td>
             </tr>
