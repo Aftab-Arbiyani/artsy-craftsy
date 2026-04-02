@@ -1,9 +1,12 @@
 import response from '@/shared/helpers/response';
-import { Body, Controller, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Headers, Post, Req } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { WebhookService } from './webhook.service';
 import logger from '@/shared/helpers/logger';
+import { WEBHOOK_EVENTS } from '@/shared/constants/constants';
+import { RawBodyRequest } from '@nestjs/common';
+import { Request } from 'express';
 
 @Controller('webhook')
 export class WebhookController {
@@ -14,15 +17,16 @@ export class WebhookController {
 
   @Post('razorpay')
   async handleRazorpayWebhook(
+    @Req() req: RawBodyRequest<Request>,
     @Body() payload: any,
     @Headers('x-razorpay-signature') razorpaySignature: string,
   ) {
     try {
       const secret = this.configService.get<string>('RAZORPAY_WEBHOOK_SECRET');
 
-      // Verify signature
+      // Verify signature using raw body to match what Razorpay signed
       const shasum = crypto.createHmac('sha256', secret);
-      shasum.update(JSON.stringify(payload));
+      shasum.update(req.rawBody);
       const digest = shasum.digest('hex');
 
       if (digest !== razorpaySignature) {
@@ -32,32 +36,47 @@ export class WebhookController {
 
       // handle event
       switch (payload.event) {
-        case 'payment.authorized':
+        case WEBHOOK_EVENTS.PAYMENT_AUTHORIZED:
           await this.webhookService.handleRazorpayPaymentAuthorized(
             payload,
             razorpaySignature,
           );
           break;
-        case 'payment.captured':
+        case WEBHOOK_EVENTS.PAYMENT_CAPTURED:
           await this.webhookService.handleRazorpayPaymentCaptured(payload);
           break;
-        case 'order.paid':
+        case WEBHOOK_EVENTS.ORDER_PAID:
           await this.webhookService.handleRazorpayOrderPaid(payload);
           break;
-        case 'payment.failed':
+        case WEBHOOK_EVENTS.PAYMENT_FAILED:
           await this.webhookService.handleRazorpayPaymentFailed(payload);
           break;
-        case 'payment.voided':
+        case WEBHOOK_EVENTS.PAYMENT_VOIDED:
           await this.webhookService.handleRazorpayPaymentVoided(payload);
           break;
-        case 'refund.created':
+        case WEBHOOK_EVENTS.REFUND_CREATED:
           await this.webhookService.handleRazorpayRefundCreated(payload);
           break;
-        case 'refund.processed':
+        case WEBHOOK_EVENTS.REFUND_PROCESSED:
           await this.webhookService.handleRazorpayRefundProcessed(payload);
           break;
-        case 'refund.failed':
+        case WEBHOOK_EVENTS.REFUND_FAILED:
           await this.webhookService.handleRazorpayRefundFailed(payload);
+          break;
+        case WEBHOOK_EVENTS.SUBSCRIPTION_ACTIVATED:
+          await this.webhookService.handleSubscriptionActivated(payload);
+          break;
+        case WEBHOOK_EVENTS.SUBSCRIPTION_CHARGED:
+          await this.webhookService.handleSubscriptionCharged(payload);
+          break;
+        case WEBHOOK_EVENTS.SUBSCRIPTION_CANCELLED:
+          await this.webhookService.handleSubscriptionCancelled(payload);
+          break;
+        case WEBHOOK_EVENTS.SUBSCRIPTION_COMPLETED:
+          await this.webhookService.handleSubscriptionCompleted(payload);
+          break;
+        case WEBHOOK_EVENTS.PAYMENT_FAILED:
+          await this.webhookService.handlePaymentFailed(payload);
           break;
         default:
           logger.error(`Unhandled event type:`, JSON.stringify(payload));

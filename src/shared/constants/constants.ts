@@ -10,3 +10,19 @@ export const ALLOWED_IMAGE_MIME_TYPES = [
 
 export const DEFAULT_LIMIT = '10';
 export const DEFAULT_OFFSET = '0';
+
+export const WEBHOOK_EVENTS = {
+  PAYMENT_AUTHORIZED: 'payment.authorized',
+  PAYMENT_CAPTURED: 'payment.captured',
+  ORDER_PAID: 'order.paid',
+  PAYMENT_FAILED: 'payment.failed',
+  PAYMENT_VOIDED: 'payment.voided',
+  REFUND_CREATED: 'refund.created',
+  REFUND_PROCESSED: 'refund.processed',
+  REFUND_FAILED: 'refund.failed',
+  SUBSCRIPTION_CHARGED: 'subscription.charged',
+  SUBSCRIPTION_ACTIVATED: 'subscription.activated',
+  SUBSCRIPTION_CANCELLED: 'subscription.cancelled',
+  SUBSCRIPTION_UPDATED: 'subscription.updated',
+  SUBSCRIPTION_COMPLETED: 'subscription.completed',
+};

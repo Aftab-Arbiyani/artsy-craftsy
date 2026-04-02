@@ -25,6 +25,7 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { RazorPayService } from './modules/razor-pay/razor-pay.service';
 import { WebhookModule } from './modules/webhook/webhook.module';
 import { UserBankAccountModule } from './modules/user-bank-account/user-bank-account.module';
+import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { UserBankAccountModule } from './modules/user-bank-account/user-bank-acc
     PaymentModule,
     WebhookModule,
     UserBankAccountModule,
+    SubscriptionsModule,
   ],
   controllers: [AppController],
   providers: [

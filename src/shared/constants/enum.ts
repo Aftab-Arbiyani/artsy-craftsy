@@ -89,3 +89,17 @@ export enum REFUND_STATUS {
   PROCESSED = 'processed',
   FAILED = 'failed',
 }
+
+export enum SUBSCRIPTION_STATUS {
+  PENDING = 'pending',
+  PAID = 'paid',
+  ACTIVE = 'active',
+  CANCELLED = 'cancelled',
+  EXPIRED = 'expired',
+  FAILED = 'failed',
+}
+
+export enum BILLING_CYCLE {
+  MONTHLY = 'monthly',
+  YEARLY = 'yearly',
+}
