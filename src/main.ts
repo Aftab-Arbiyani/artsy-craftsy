@@ -10,6 +10,7 @@ import * as path from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: false,
+    rawBody: true,
   });
 
   const port = process.env.PORT || 4008;

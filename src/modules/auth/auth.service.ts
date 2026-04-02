@@ -71,7 +71,7 @@ export class AuthService {
 
     await emailService.sendMail({
       to: user.email,
-      subject: 'Welcome to Art & Craft Studio',
+      subject: 'Welcome to Arts & Craft Studio',
       html: ejsTemplate,
     });
   }

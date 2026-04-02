@@ -8,11 +8,13 @@ import {
   PAYMENT_METHOD,
   PAYMENT_STATUS,
   REFUND_STATUS,
+  SUBSCRIPTION_STATUS,
 } from '@/shared/constants/enum';
 import { OrderItem } from '../orders/entities/order-item.entity';
 import { renderFile } from 'ejs';
 import { resolve } from 'path';
 import { EmailService } from '@/shared/helpers/send-mail';
+import { Subscription } from '../subscriptions/entities/subscription.entity';
 
 @Injectable()
 export class WebhookService {
@@ -22,6 +24,8 @@ export class WebhookService {
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(OrderItem)
     private readonly orderItemRepository: Repository<OrderItem>,
+    @InjectRepository(Subscription)
+    private readonly subscriptionRepository: Repository<Subscription>,
     private readonly emailService: EmailService,
   ) {}
 
@@ -32,9 +36,7 @@ export class WebhookService {
       where: { razorpay_order_id: paymentData.order_id },
     });
 
-    if (!order) {
-      throw new Error('Order not found.');
-    }
+    if (!order) return;
 
     const createPaymentData = {
       order: { id: order.id },
@@ -85,9 +87,7 @@ export class WebhookService {
       where: { razorpay_order_id: paymentData.order_id },
     });
 
-    if (!order) {
-      throw new Error('Order not found.');
-    }
+    if (!order) return;
 
     const payment = await this.paymentService.findOneWhere({
       where: { order: { id: order.id }, razorpay_payment_id: paymentData.id },
@@ -107,9 +107,7 @@ export class WebhookService {
       where: { razorpay_order_id: paymentData.order_id },
     });
 
-    if (!order) {
-      throw new Error('Order not found.');
-    }
+    if (!order) return;
 
     const payment = await this.paymentService.findOneWhere({
       where: { order: { id: order.id }, razorpay_payment_id: paymentData.id },
@@ -148,9 +146,7 @@ export class WebhookService {
       where: { razorpay_order_id: paymentData.order_id },
     });
 
-    if (!order) {
-      throw new Error('Order not found.');
-    }
+    if (!order) return;
 
     const payment = await this.paymentService.findOneWhere({
       where: { order: { id: order.id }, razorpay_payment_id: paymentData.id },
@@ -190,9 +186,7 @@ export class WebhookService {
       where: { razorpay_order_id: orderData.id },
     });
 
-    if (!order) {
-      throw new Error('Order not found.');
-    }
+    if (!order) return;
 
     //send email for order confirmed
     await this.orderRepository.update(order.id, {
@@ -299,7 +293,7 @@ export class WebhookService {
 
     await this.emailService.sendMail({
       to: order.user.email,
-      subject: 'Order Confirmation - Art & Craft Studio',
+      subject: 'Order Confirmation - Arts & Craft Studio',
       html: ejsTemplate,
     });
   }
@@ -318,7 +312,7 @@ export class WebhookService {
 
     await this.emailService.sendMail({
       to: order.user.email,
-      subject: 'Payment Failed - Art & Craft Studio',
+      subject: 'Payment Failed - Arts & Craft Studio',
       html: ejsTemplate,
     });
   }
@@ -338,8 +332,89 @@ export class WebhookService {
 
     await this.emailService.sendMail({
       to: order.user.email,
-      subject: 'Refund Processed - Art & Craft Studio',
+      subject: 'Refund Processed - Arts & Craft Studio',
       html: ejsTemplate,
     });
+  }
+
+  async handleSubscriptionActivated(payload: any) {
+    const subscriptionData = payload.payload.subscription.entity;
+
+    await this.subscriptionRepository.update(
+      {
+        razorpay_subscription_id: subscriptionData.id,
+      },
+      {
+        status: SUBSCRIPTION_STATUS.ACTIVE,
+        start_date: subscriptionData.start_at,
+        end_date: subscriptionData.end_at,
+        razorpay_response: JSON.stringify(subscriptionData),
+      },
+    );
+  }
+
+  async handleSubscriptionCharged(payload: any) {
+    const subscriptionData = payload.payload.subscription.entity;
+    const paymentData = payload.payload.payment.entity;
+
+    await this.subscriptionRepository.update(
+      {
+        razorpay_subscription_id: subscriptionData.id,
+      },
+      {
+        status: SUBSCRIPTION_STATUS.PAID,
+        razorpay_payment_id: paymentData.id,
+        razorpay_invoice_id: paymentData.invoice_id,
+        amount: paymentData.amount / 100, // Convert from paise to rupees
+        payment_method: paymentData.method,
+        email: paymentData.email,
+        phone_number: paymentData.contact,
+        razorpay_response: JSON.stringify(payload.payload),
+      },
+    );
+  }
+
+  async handleSubscriptionCancelled(payload: any) {
+    const subscriptionData = payload.payload.subscription.entity;
+
+    await this.subscriptionRepository.update(
+      {
+        razorpay_subscription_id: subscriptionData.id,
+      },
+      {
+        status: SUBSCRIPTION_STATUS.CANCELLED,
+        cancelled_at: subscriptionData.cancelled_at,
+        razorpay_response: JSON.stringify(subscriptionData),
+      },
+    );
+  }
+
+  async handleSubscriptionCompleted(payload: any) {
+    const subscriptionData = payload.payload.subscription.entity;
+
+    await this.subscriptionRepository.update(
+      {
+        razorpay_subscription_id: subscriptionData.id,
+      },
+      {
+        status: SUBSCRIPTION_STATUS.EXPIRED,
+        razorpay_response: JSON.stringify(subscriptionData),
+      },
+    );
+  }
+
+  async handlePaymentFailed(payload: any) {
+    const paymentData = payload.payload.payment.entity;
+
+    await this.subscriptionRepository.update(
+      {
+        razorpay_subscription_id: paymentData.subscription_id,
+      },
+      {
+        status: SUBSCRIPTION_STATUS.FAILED,
+        error_description: paymentData.error_description,
+        error_step: paymentData.error_step,
+      },
+    );
   }
 }

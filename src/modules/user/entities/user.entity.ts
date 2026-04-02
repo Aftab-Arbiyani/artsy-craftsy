@@ -11,6 +11,7 @@ import { Cart } from '@/modules/cart/entities/cart.entity';
 import { Order } from '@/modules/orders/entities/order.entity';
 import { AiSuggestion } from '@/modules/ai-suggestion/entities/ai-suggestion.entity';
 import { UserBankAccount } from '@/modules/user-bank-account/entities/user-bank-account.entity';
+import { Subscription } from '@/modules/subscriptions/entities/subscription.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -74,4 +75,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => UserBankAccount, (bankAccount) => bankAccount.user)
   bank_accounts: UserBankAccount[];
+
+  @OneToMany(() => Subscription, (subscription) => subscription.user)
+  subscriptions: Subscription[];
 }

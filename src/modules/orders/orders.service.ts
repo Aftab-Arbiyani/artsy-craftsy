@@ -390,7 +390,7 @@ export class OrdersService {
 
     await this.emailService.sendMail({
       to: order.user.email,
-      subject: 'Order Cancelled - Art & Craft Studio',
+      subject: 'Order Cancelled - Arts & Craft Studio',
       html: ejsTemplate,
     });
   }

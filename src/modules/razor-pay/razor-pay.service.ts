@@ -3,6 +3,8 @@ import { Order } from '../orders/entities/order.entity';
 import { ConfigService } from '@nestjs/config';
 import Razorpay from 'razorpay';
 import axios from 'axios';
+import { SubscriptionPlan } from '../subscriptions/entities/subscription-plan.entity';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class RazorPayService {
@@ -54,7 +56,7 @@ export class RazorPayService {
         { headers: this.authHeader },
       );
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
         error.response?.data?.error?.description ||
           'Razorpay Contact Creation Failed',
@@ -87,7 +89,7 @@ export class RazorPayService {
         { headers: this.authHeader },
       );
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
         error.response?.data?.error?.description ||
           'Razorpay Fund Account Failed',
@@ -103,7 +105,7 @@ export class RazorPayService {
         { headers: this.authHeader },
       );
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
         error.response?.data?.error?.description || 'Account Retrieval Failed',
         error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
@@ -128,5 +130,18 @@ export class RazorPayService {
       options,
     );
     return razorpayRefund;
+  }
+
+  async createSubscription(plan: SubscriptionPlan, user: User) {
+    const razorpaySubscription = await this.razorpay.subscriptions.create({
+      plan_id: plan.razorpay_plan_id,
+      customer_notify: 1,
+      total_count: 1, // number of billing cycles
+      notes: {
+        userId: user.id,
+      },
+    });
+
+    return razorpaySubscription;
   }
 }
