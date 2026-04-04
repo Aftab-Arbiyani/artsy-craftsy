@@ -21,9 +21,6 @@ export class CreateUserBankAccountDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, {
-    message: 'Invalid IFSC code format (e.g. HDFC0001234)',
-  })
   ifsc_code: string;
 
   @IsString()

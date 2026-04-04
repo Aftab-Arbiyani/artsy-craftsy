@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CompleteProfileDto {
   @IsNotEmpty()
@@ -25,7 +25,7 @@ export class CompleteProfileDto {
   @IsString()
   country: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   profile_picture: string;
 

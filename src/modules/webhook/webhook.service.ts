@@ -7,6 +7,7 @@ import {
   ORDER_STATUS,
   PAYMENT_METHOD,
   PAYMENT_STATUS,
+  PRODUCT_STATUS,
   REFUND_STATUS,
   SUBSCRIPTION_STATUS,
 } from '@/shared/constants/enum';
@@ -15,6 +16,7 @@ import { renderFile } from 'ejs';
 import { resolve } from 'path';
 import { EmailService } from '@/shared/helpers/send-mail';
 import { Subscription } from '../subscriptions/entities/subscription.entity';
+import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class WebhookService {
@@ -26,6 +28,8 @@ export class WebhookService {
     private readonly orderItemRepository: Repository<OrderItem>,
     @InjectRepository(Subscription)
     private readonly subscriptionRepository: Repository<Subscription>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
     private readonly emailService: EmailService,
   ) {}
 
@@ -198,6 +202,21 @@ export class WebhookService {
       { order: { id: order.id } },
       { status: ORDER_STATUS.CONFIRMED },
     );
+
+    const products = order.items.map((item) => item.product);
+    const items = order.items;
+
+    for (const product of products) {
+      const orderedItem = items.find((item) => item.product.id === product.id);
+      if (orderedItem) {
+        product.quantity = product.quantity - orderedItem.quantity;
+        if (product.quantity === 0) product.status = PRODUCT_STATUS.SOLD;
+        await this.productRepository.update(product.id, {
+          quantity: product.quantity,
+          status: product.status,
+        });
+      }
+    }
 
     await this.sendOrderConfirmationEmail(order);
 
