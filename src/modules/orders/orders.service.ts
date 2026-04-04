@@ -45,11 +45,24 @@ export class OrdersService {
     const productIds = items.map((item) => item.product);
 
     const products = await this.productRepository.find({
-      where: { id: In(productIds), quantity: MoreThan(0) },
+      relations: { user: true },
+      where: {
+        id: In(productIds),
+        quantity: MoreThan(0),
+        status: PRODUCT_STATUS.ACTIVE,
+      },
     });
 
     if (!products?.length)
       throw new Error('Insufficient stock for the requested products');
+
+    const isProductsOwnedByUser = products.some(
+      (product) => product.user.id === user.id,
+    );
+
+    if (isProductsOwnedByUser) {
+      throw new Error('Cannot order your own products');
+    }
 
     const cart = await this.cartRepository.findOne({
       where: { user: { id: user.id } },
@@ -71,15 +84,6 @@ export class OrdersService {
         { product: { id: In(productIds) }, cart: { id: cart.id } },
         { deleted_at: new Date().toISOString() },
       );
-
-      for (const product of products) {
-        const orderedItem = items.find((item) => item.product === product.id);
-        if (orderedItem) {
-          product.quantity = product.quantity - orderedItem.quantity;
-          if (product.quantity === 0) product.status = PRODUCT_STATUS.SOLD;
-          await manager.save(product);
-        }
-      }
 
       const razorpayOrder = await this.razorPayService.createOrder(savedOrder);
 
@@ -329,6 +333,7 @@ export class OrdersService {
     } = markOrderShippedDto;
 
     const orderData = await this.orderRepository.findOne({
+      relations: { user: true, address: true },
       where: { id: order },
     });
 
@@ -352,6 +357,15 @@ export class OrdersService {
         },
       );
     }
+
+    await this.sendOrderShippedEmail({
+      name: orderData.user.name,
+      email: orderData.user.email,
+      order_number: orderData.order_number,
+      tracking_number,
+      courier_name,
+      address: orderData.address,
+    });
   }
 
   async markCustomOrderShipped(markOrderShippedDto: MarkOrderShippedDto) {
@@ -359,6 +373,7 @@ export class OrdersService {
       markOrderShippedDto;
 
     const orderData = await this.orderRepository.findOne({
+      relations: { user: true, address: true },
       where: { id: order },
     });
 
@@ -372,6 +387,15 @@ export class OrdersService {
       courier_reciept: courier_reciept,
       tracking_number: tracking_number,
       courier_name: courier_name,
+    });
+
+    await this.sendOrderShippedEmail({
+      name: orderData.user.name,
+      email: orderData.user.email,
+      order_number: orderData.order_number,
+      tracking_number,
+      courier_name,
+      address: orderData.address,
     });
   }
 
@@ -391,6 +415,25 @@ export class OrdersService {
     await this.emailService.sendMail({
       to: order.user.email,
       subject: 'Order Cancelled - Arts & Craft Studio',
+      html: ejsTemplate,
+    });
+  }
+
+  async sendOrderShippedEmail(payload: any) {
+    const ejsTemplate = await renderFile(
+      resolve(__dirname, `../../../src/shared/ejs-templates/shipped.ejs`),
+      {
+        name: payload.name,
+        orderId: payload.order_number,
+        trackingNumber: payload.tracking_number,
+        carrierName: payload.courier_name,
+        address: payload.address,
+      },
+    );
+
+    await this.emailService.sendMail({
+      to: payload.email,
+      subject: 'Order Shipped - Arts & Craft Studio',
       html: ejsTemplate,
     });
   }

@@ -8,10 +8,17 @@ import { Payment } from '../payment/entities/payment.entity';
 import { OrderItem } from '../orders/entities/order-item.entity';
 import { EmailService } from '@/shared/helpers/send-mail';
 import { Subscription } from '../subscriptions/entities/subscription.entity';
+import { Product } from '../products/entities/product.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, Payment, OrderItem, Subscription]),
+    TypeOrmModule.forFeature([
+      Order,
+      Payment,
+      OrderItem,
+      Subscription,
+      Product,
+    ]),
   ],
   controllers: [WebhookController],
   providers: [WebhookService, PaymentService, EmailService],
