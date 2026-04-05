@@ -186,7 +186,12 @@ export class WebhookService {
     const paymentData = data.payload.payment.entity;
 
     const order = await this.orderRepository.findOne({
-      relations: { user: true, items: { product: true }, address: true },
+      relations: {
+        user: true,
+        items: { product: true },
+        address: true,
+        custom_request: true,
+      },
       where: { razorpay_order_id: orderData.id },
     });
 
@@ -307,6 +312,7 @@ export class WebhookService {
         items: order.items,
         address: order.address,
         totalAmount: order.total_amount,
+        customRequest: order.custom_request ?? null,
       },
     );
 
