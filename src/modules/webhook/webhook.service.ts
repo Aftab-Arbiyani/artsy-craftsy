@@ -371,8 +371,8 @@ export class WebhookService {
       },
       {
         status: SUBSCRIPTION_STATUS.ACTIVE,
-        start_date: subscriptionData.start_at,
-        end_date: subscriptionData.end_at,
+        start_date: subscriptionData.current_start,
+        end_date: subscriptionData.current_end,
         razorpay_response: JSON.stringify(subscriptionData),
       },
     );
