@@ -57,7 +57,7 @@ export class ProductsController {
   async findAll(@Query() query: any) {
     try {
       const [data, count] = await this.productsService.findAll({
-        where: { quantity: MoreThan(0) },
+        where: { status: PRODUCT_STATUS.ACTIVE, quantity: MoreThan(0) },
       });
 
       return response.successResponseWithPagination({
