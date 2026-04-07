@@ -3,7 +3,7 @@ import { Entity, Column, OneToOne } from 'typeorm';
 import { OneToMany } from 'typeorm';
 import { UserAddress } from '../../user-address/entities/user-address.entity';
 import { Exclude } from 'class-transformer';
-import { USER_TYPE } from '@/shared/constants/enum';
+import { DEFAULT_STATUS, USER_TYPE } from '@/shared/constants/enum';
 import { Token } from '@/modules/token/entities/token.entity';
 import { Product } from '@/modules/products/entities/product.entity';
 import { CustomArt } from '@/modules/custom-art/entities/custom-art.entity';
@@ -69,6 +69,13 @@ export class User extends BaseEntity {
 
   @OneToOne(() => Cart, (cart) => cart.user)
   cart: Cart;
+
+  @Column({
+    type: 'enum',
+    enum: DEFAULT_STATUS,
+    default: DEFAULT_STATUS.ACTIVE,
+  })
+  status: DEFAULT_STATUS;
 
   @OneToMany(() => AiSuggestion, (aiSuggestion) => aiSuggestion.user)
   ai_suggestions: AiSuggestion[];

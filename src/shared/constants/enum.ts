@@ -8,6 +8,7 @@ export enum DEVICE_TYPE {
   WEB = 'web',
   ANDROID = 'android',
   IOS = 'ios',
+  MOBILE = 'mobile',
 }
 
 export enum DEFAULT_STATUS {
