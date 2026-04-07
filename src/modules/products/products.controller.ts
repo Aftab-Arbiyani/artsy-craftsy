@@ -295,7 +295,12 @@ export class ProductsController {
   async findOne(@Param('id', UUIDValidationPipe) id: string) {
     try {
       const product = await this.productsService.findOne({
-        relations: { category: true, materials: true, media: true, user: true },
+        relations: {
+          category: true,
+          materials: true,
+          media: true,
+          user: { addresses: true },
+        },
         where: { id },
       });
 
@@ -306,9 +311,10 @@ export class ProductsController {
         });
       }
 
+      const city = product.user.addresses[0]?.city || '';
       return response.successResponse({
         message: CONSTANT.SUCCESS.RECORD_FOUND('Product'),
-        data: product,
+        data: { ...product, city },
       });
     } catch (error) {
       return response.failureResponse(error);
