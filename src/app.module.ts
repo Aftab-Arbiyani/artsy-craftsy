@@ -14,7 +14,7 @@ import { TokenModule } from './modules/token/token.module';
 import { OtpModule } from './modules/otp/otp.module';
 import { MaterialModule } from './modules/material/material.module';
 import { AdminModule } from './modules/admin/admin.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './shared/helpers/response-interceptor';
 import { UploadModule } from './modules/upload/upload.module';
 import { CustomArtModule } from './modules/custom-art/custom-art.module';
@@ -26,6 +26,8 @@ import { RazorPayService } from './modules/razor-pay/razor-pay.service';
 import { WebhookModule } from './modules/webhook/webhook.module';
 import { UserBankAccountModule } from './modules/user-bank-account/user-bank-account.module';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerExceptionFilter } from './shared/helpers/throttler-exception';
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
       useFactory: (configService: ConfigService) => database(configService),
       inject: [ConfigService],
     }),
+    ThrottlerModule.forRoot([{ limit: 0, ttl: 0 }]),
     ProductsModule,
     CategoryModule,
     UserModule,
@@ -62,6 +65,10 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
   providers: [
     AppService,
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
+    {
+      provide: APP_FILTER,
+      useClass: ThrottlerExceptionFilter,
+    },
     RazorPayService,
   ],
 })
