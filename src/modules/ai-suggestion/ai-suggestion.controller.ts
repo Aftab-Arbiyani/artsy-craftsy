@@ -14,6 +14,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { IRequest } from '@/shared/constants/types';
 import { MEDIA_FOLDER } from '@/shared/constants/enum';
 import { UploadService } from '../upload/upload.service';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('ai-suggestion')
 export class AiSuggestionController {
@@ -22,7 +23,10 @@ export class AiSuggestionController {
     private readonly uploadService: UploadService,
   ) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @Throttle({
+    default: { limit: 3, ttl: 60000 },
+  })
+  @UseGuards(AuthGuard('jwt'), ThrottlerGuard)
   @Post()
   async create(
     @Body() createAiSuggestionDto: CreateAiSuggestionDto,
