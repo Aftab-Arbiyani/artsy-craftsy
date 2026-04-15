@@ -7,8 +7,10 @@ import logger from './logger';
 const PROJECT = 'gen-lang-client-0960678853';
 const LOCATION = 'us-central1';
 const MODEL_ID = 'imagen-4.0-generate-001';
-const KEY_FILE =
-  '/home/aftab/Downloads/gen-lang-client-0960678853-93e2365ce457.json';
+const KEY_FILE = path.join(
+  __dirname,
+  '/../../../gen-lang-client-0960678853-93e2365ce457.json',
+);
 
 const predictionServiceClient = new PredictionServiceClient({
   apiEndpoint: `${LOCATION}-aiplatform.googleapis.com`,

@@ -36,3 +36,5 @@ lerna-debug.log*
 
 .env
 /public
+
+gen-lang-client-0960678853-93e2365ce457.json
