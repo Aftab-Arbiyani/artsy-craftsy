@@ -466,7 +466,7 @@ export class ProductsController {
   ) {
     try {
       const [artistProducts, count] = await this.productsService.findAll({
-        relations: { media: true },
+        relations: { media: true, category: true, materials: true },
         where: { user: { id }, quantity: MoreThan(0) },
         take: +queryParams.take,
         skip: +queryParams.skip,
