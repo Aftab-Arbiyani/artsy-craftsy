@@ -17,10 +17,14 @@ import { CONSTANT } from '@/shared/constants/message';
 import { ADDRESSTYPE, USER_TYPE } from '@/shared/constants/enum';
 import { UUIDValidationPipe } from '@/shared/pipe/uuid.validation.pipe';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { FollowService } from '@/modules/follow/follow.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly followService: FollowService,
+  ) {}
 
   @UseGuards(AuthGuard('jwt'))
   @Patch('complete-profile')
@@ -138,9 +142,11 @@ export class UserController {
         });
       }
 
+      const followersCount = await this.followService.getFollowerCount(id);
+
       return response.successResponse({
         message: CONSTANT.SUCCESS.RECORD_FOUND('Artist'),
-        data: artist,
+        data: { ...artist, followers_count: followersCount },
       });
     } catch (error) {
       return response.failureResponse(error);

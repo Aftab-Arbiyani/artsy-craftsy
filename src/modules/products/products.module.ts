@@ -7,10 +7,11 @@ import { ProductMedia } from './entities/product-media.entity';
 import { UploadService } from '../upload/upload.service';
 import { Category } from '../category/entities/category.entity';
 import { User } from '../user/entities/user.entity';
+import { EmailService } from '@/shared/helpers/send-mail';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product, ProductMedia, Category, User])],
   controllers: [ProductsController],
-  providers: [ProductsService, UploadService],
+  providers: [ProductsService, UploadService, EmailService],
 })
 export class ProductsModule {}

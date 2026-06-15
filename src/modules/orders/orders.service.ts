@@ -23,6 +23,7 @@ import { OrderItem } from './entities/order-item.entity';
 import { renderFile } from 'ejs';
 import { resolve } from 'path';
 import { EmailService } from '@/shared/helpers/send-mail';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class OrdersService {
@@ -38,6 +39,7 @@ export class OrdersService {
     private readonly razorPayService: RazorPayService,
     private readonly dataSource: DataSource,
     private readonly emailService: EmailService,
+    private readonly configService: ConfigService,
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto, user: any): Promise<Order> {
@@ -97,6 +99,12 @@ export class OrdersService {
         where: { id: savedOrder.id },
       });
 
+      await this.emailService.sendMail({
+        to: this.configService.get<string>('SMTP_FROM'),
+        subject: 'Order Created',
+        text: `Your order with ID: ${updatedOrder.order_number} has been successfully created.`,
+      });
+
       return plainToInstance(Order, updatedOrder);
     });
   }
@@ -130,6 +138,12 @@ export class OrdersService {
       // Return the updated order with razorpay info
       const updatedOrder = await manager.findOne(Order, {
         where: { id: savedOrder.id },
+      });
+
+      await this.emailService.sendMail({
+        to: this.configService.get<string>('SMTP_FROM'),
+        subject: 'CustomOrder Created',
+        text: `Your order with ID: ${updatedOrder.order_number} has been successfully created.`,
       });
 
       return plainToInstance(Order, updatedOrder);

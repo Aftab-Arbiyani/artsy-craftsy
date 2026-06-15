@@ -15,6 +15,8 @@ import { ProductMedia } from './entities/product-media.entity';
 import { UploadService } from '../upload/upload.service';
 import { Category } from '../category/entities/category.entity';
 import { User } from '../user/entities/user.entity';
+import { EmailService } from '@/shared/helpers/send-mail';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProductsService {
@@ -28,6 +30,8 @@ export class ProductsService {
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -41,6 +45,12 @@ export class ProductsService {
         product: { id: result.id },
       })),
     );
+
+    await this.emailService.sendMail({
+      to: this.configService.get<string>('SMTP_FROM'),
+      subject: 'New Product Created',
+      text: `A new product has been created with name: ${result.title}`,
+    });
     return plainToInstance(Product, result);
   }
 

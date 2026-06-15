@@ -22,6 +22,7 @@ import * as jwt from 'jsonwebtoken';
 import { Product } from '../products/entities/product.entity';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +36,7 @@ export class AuthService {
     private readonly tokenRepository: Repository<Token>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly configService: ConfigService,
   ) {}
 
   async findOneWhere(options: FindOneOptions<User>): Promise<User | null> {
@@ -63,7 +65,7 @@ export class AuthService {
         name: user.name,
         minutes: 10,
         redirectUrl:
-          process.env.REDIRECT_URL +
+          this.configService.get<string>('REDIRECT_URL') +
           '/auth/verify-email?id=' +
           `${encryptedEmail}-${encryptedOtp}`,
       },
@@ -73,6 +75,11 @@ export class AuthService {
       to: user.email,
       subject: 'Welcome to Arts & Craft Studio',
       html: ejsTemplate,
+    });
+    await emailService.sendMail({
+      to: this.configService.get<string>('SMTP_FROM'),
+      subject: 'User Signup Notification',
+      text: `New user signed up with email: ${user.email} and name: ${user.name}`,
     });
   }
 

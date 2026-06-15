@@ -26,6 +26,7 @@ import { RazorPayService } from './modules/razor-pay/razor-pay.service';
 import { WebhookModule } from './modules/webhook/webhook.module';
 import { UserBankAccountModule } from './modules/user-bank-account/user-bank-account.module';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
+import { FollowModule } from './modules/follow/follow.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerExceptionFilter } from './shared/helpers/throttler-exception';
 
@@ -60,6 +61,7 @@ import { ThrottlerExceptionFilter } from './shared/helpers/throttler-exception';
     WebhookModule,
     UserBankAccountModule,
     SubscriptionsModule,
+    FollowModule,
   ],
   controllers: [AppController],
   providers: [
